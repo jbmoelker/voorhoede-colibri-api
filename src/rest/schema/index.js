@@ -17,21 +17,23 @@ const parameters = {
     in: 'query',
     type: 'string',
     enum: ['en', 'nl'],
-    default: 'en'
+    default: 'en',
   },
   limit: {
     name: 'limit',
     in: 'query',
-    type: 'number'
+    type: 'number',
   },
   slug: {
     name: 'slug',
     in: 'path',
-    type: 'string'
+    type: 'string',
+    required: true,
   },
 }
 
 module.exports = {
+  swagger: '2.0',
   info: {
     title: 'Voorhoede Colibri API',
     version: 'v1',
@@ -45,6 +47,7 @@ module.exports = {
         parameters: [ parameters.fields(Post), parameters.limit ],
         responses: {
           '200': {
+            description: 'All posts',
             schema: {
               type: 'array',
               items: { '$ref': '#/definitions/Post' }
@@ -61,6 +64,7 @@ module.exports = {
         ],
         responses: {
           '200': {
+            description: 'Single post by slug',
             schema: { '$ref': '#/definitions/Post' }
           }
         }
@@ -74,6 +78,7 @@ module.exports = {
         ],
         responses: {
           '200': {
+            description: 'All projects in given language',
             schema: {
               type: 'array',
               items: { '$ref': '#/definitions/Project' }
@@ -91,6 +96,7 @@ module.exports = {
         ],
         responses: {
           '200': {
+            description: 'Single project by slug in given language',
             schema: { '$ref': '#/definitions/Project' }
           }
         }

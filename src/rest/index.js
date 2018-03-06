@@ -28,7 +28,8 @@ router.get('/swagger.json', async (req, res) => {
 router.get('/home', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('home')
-  res.json( page[language] )
+  const fields = Object.keys(schema.definitions.Home.properties)
+  res.json( pick(page[language], fields) )
 })
 
 router.get('/portfolio', async (req, res) => {

@@ -1,5 +1,6 @@
 const Blog = require('./models/blog')
 const Contact = require('./models/contact')
+const Home = require('./models/home')
 const Post = require('./models/post')
 const Project = require('./models/project')
 const Work = require('./models/work')
@@ -43,7 +44,7 @@ module.exports = {
   },
   basePath: '/api',
   produces: ['application/json'],
-  definitions: { Blog, Contact, Post, Project, Work },
+  definitions: { Blog, Contact, Home, Post, Project, Work },
   paths: {
     '/blog': {
       'get': {
@@ -64,6 +65,19 @@ module.exports = {
           '200': {
             description: 'Contact overview',
             schema: { '$ref': '#/definitions/Contact' }
+          }
+        }
+      }
+    },
+    '/home': {
+      'get': {
+        parameters: [
+          parameters.language,
+        ],
+        responses: {
+          '200': {
+            description: 'Home page',
+            schema: { '$ref': '#/definitions/Home' }
           }
         }
       }

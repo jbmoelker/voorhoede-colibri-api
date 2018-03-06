@@ -1,5 +1,7 @@
+const Blog = require('./models/blog')
 const Post = require('./models/post')
 const Project = require('./models/project')
+const Work = require('./models/work')
 
 const parameters = {
   fields: (model) => ({
@@ -40,8 +42,31 @@ module.exports = {
   },
   basePath: '/api',
   produces: ['application/json'],
-  definitions: { Post, Project },
+  definitions: { Blog, Post, Project, Work },
   paths: {
+    '/blog': {
+      'get': {
+        responses: {
+          '200': {
+            description: 'Blog overview',
+            schema: { '$ref': '#/definitions/Blog' }
+          }
+        }
+      }
+    },
+    '/portfolio': {
+      'get': {
+        parameters: [
+          parameters.language,
+        ],
+        responses: {
+          '200': {
+            description: 'Work overview',
+            schema: { '$ref': '#/definitions/Work' }
+          }
+        }
+      }
+    },
     '/posts': {
       'get': {
         parameters: [ parameters.fields(Post), parameters.limit ],
@@ -101,6 +126,6 @@ module.exports = {
           }
         }
       }
-    }
+    },
   }
 }

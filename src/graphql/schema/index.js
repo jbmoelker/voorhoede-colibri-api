@@ -4,6 +4,7 @@ const BlogType = require('./types/blog')
 const LanguageType = require('./types/language')
 const PostType = require('./types/post')
 const ProjectType = require('./types/project')
+const WorkType = require('./types/work')
 
 const queryType = new GraphQLObjectType({
   name: 'RootQuery',
@@ -43,6 +44,14 @@ const queryType = new GraphQLObjectType({
         .then(itemsI18n => itemsI18n[args.language])
         .then(items => items.find(item => item.slug === args.slug))
       ,
+    },
+    work: {
+      type: WorkType,
+      args: {
+        language: { type: new GraphQLNonNull(LanguageType) },
+      },
+      resolve: (_, args) => dataLoader.load('work')
+        .then(pageI18n => pageI18n[args.language])
     },
   },
 })

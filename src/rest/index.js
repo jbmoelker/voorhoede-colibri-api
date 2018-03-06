@@ -56,7 +56,8 @@ router.get('/projects/:slug', async (req, res) => {
 
 router.get('/blog', async (req, res) => {
   const page = await dataLoader.load('blog')
-  res.json(page)
+  const fields = Object.keys(schema.definitions.Blog.properties)
+  res.json(pick(page, fields))
 })
 
 router.get('/posts', async (req, res) => {

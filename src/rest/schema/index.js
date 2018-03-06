@@ -1,5 +1,5 @@
-const Post = require('./post')
-const Project = require('./project')
+const Post = require('./models/post')
+const Project = require('./models/project')
 
 const parameters = {
   fields: (model) => ({

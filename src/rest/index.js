@@ -89,7 +89,8 @@ router.get('/team', async (req, res) => {
 router.get('/contact', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('contact')
-  res.json( page[language] )
+  const fields = Object.keys(schema.definitions.Contact.properties)
+  res.json( pick(page[language], fields) )
 })
 
 router.get('/:model', async (req, res) => {

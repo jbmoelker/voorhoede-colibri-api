@@ -1,6 +1,7 @@
 const dataLoader = require('../../data-loader')
 const { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } = require('graphql')
 const BlogType = require('./types/blog')
+const ContactType = require('./types/contact')
 const LanguageType = require('./types/language')
 const PostType = require('./types/post')
 const ProjectType = require('./types/project')
@@ -12,6 +13,14 @@ const queryType = new GraphQLObjectType({
     blog: {
       type: BlogType,
       resolve: (_, args) => dataLoader.load('blog')
+    },
+    contact: {
+      type: ContactType,
+      args: {
+        language: { type: new GraphQLNonNull(LanguageType) },
+      },
+      resolve: (_, args) => dataLoader.load('contact')
+        .then(pageI18n => pageI18n[args.language])
     },
     posts: {
       type: new GraphQLList(PostType),

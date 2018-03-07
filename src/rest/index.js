@@ -84,7 +84,8 @@ router.get('/posts/:slug', async (req, res) => {
 router.get('/team', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('team')
-  res.json( page[language] )
+  const fields = Object.keys(schema.definitions.Team.properties)
+  res.json( pick(page[language], fields) )
 })
 
 router.get('/contact', async (req, res) => {

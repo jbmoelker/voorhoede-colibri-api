@@ -2,6 +2,7 @@ const Blog = require('./models/blog')
 const Contact = require('./models/contact')
 const Event = require('./models/event')
 const Home = require('./models/home')
+const Job = require('./models/job')
 const Post = require('./models/post')
 const Project = require('./models/project')
 const Team = require('./models/team')
@@ -46,7 +47,7 @@ module.exports = {
   },
   basePath: '/api',
   produces: ['application/json'],
-  definitions: { Blog, Contact, Event, Home, Post, Project, Team, Work },
+  definitions: { Blog, Contact, Event, Home, Job, Post, Project, Team, Work },
   paths: {
     '/blog': {
       'get': {
@@ -97,6 +98,38 @@ module.exports = {
           '200': {
             description: 'Home page',
             schema: { '$ref': '#/definitions/Home' }
+          }
+        }
+      }
+    },
+    '/jobs': {
+      'get': {
+        parameters: [
+          parameters.language,
+          parameters.fields(Job),
+        ],
+        responses: {
+          '200': {
+            description: 'All jobs in given language',
+            schema: {
+              type: 'array',
+              items: { '$ref': '#/definitions/Job' }
+            }
+          }
+        }
+      }
+    },
+    '/jobs/{slug}': {
+      'get': {
+        parameters: [
+          parameters.slug,
+          parameters.language,
+          parameters.fields(Job),
+        ],
+        responses: {
+          '200': {
+            description: 'Single job by slug in given language',
+            schema: { '$ref': '#/definitions/Job' }
           }
         }
       }

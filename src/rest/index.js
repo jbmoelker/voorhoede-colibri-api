@@ -40,6 +40,23 @@ router.get('/events', async (req, res) => {
   res.json(items)
 })
 
+router.get('/jobs', async (req, res) => {
+  const { language } = req.query
+  const fields = fieldsToArray(req.query.fields)
+  const itemsI18n = await dataLoader.load('jobs')
+  const items = itemsI18n[language].map(item => pick(item, fields))
+  res.json(items)
+})
+
+router.get('/jobs/:slug', async (req, res) => {
+  const { language } = req.query
+  const fields = fieldsToArray(req.query.fields)
+  const { slug } = req.params
+  const itemsI18n = await dataLoader.load('jobs')
+  const item = pick(itemsI18n[language].find(item => item.slug === slug), fields)
+  res.json(item)
+})
+
 router.get('/portfolio', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('work')

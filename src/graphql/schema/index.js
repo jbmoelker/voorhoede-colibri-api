@@ -4,6 +4,7 @@ const BlogType = require('./types/blog')
 const ContactType = require('./types/contact')
 const EventType = require('./types/event')
 const HomeType = require('./types/home')
+const JobType = require('./types/job')
 const LanguageType = require('./types/language')
 const PostType = require('./types/post')
 const ProjectType = require('./types/project')
@@ -40,6 +41,25 @@ const queryType = new GraphQLObjectType({
       },
       resolve: (_, args) => dataLoader.load('home')
         .then(pageI18n => pageI18n[args.language])
+    },
+    jobs: {
+      type: new GraphQLList(JobType),
+      args: {
+        language: { type: new GraphQLNonNull(LanguageType) },
+      },
+      resolve: (_, args) => dataLoader.load('jobs')
+        .then(itemsI18n => itemsI18n[args.language])
+    },
+    job: {
+      type: JobType,
+      args: {
+        language: { type: new GraphQLNonNull(LanguageType) },
+        slug: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: (_, args) => dataLoader.load('jobs')
+        .then(itemsI18n => itemsI18n[args.language])
+        .then(items => items.find(item => item.slug === args.slug))
+      ,
     },
     posts: {
       type: new GraphQLList(PostType),

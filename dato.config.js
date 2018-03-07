@@ -5,14 +5,15 @@ const markdownToHtml = require('./lib/markdown-to-html')
 const languages = ['nl', 'en']
 
 module.exports = (dato, root, i18n) => {
-  root.createDataFile('data/home.json', 'json', itemToJsonI18n(dato.home, i18n))
-  root.createDataFile('data/work.json', 'json', itemToJsonI18n(dato.work, i18n))
-  root.createDataFile('data/projects.json', 'json', itemsToJsonI18n(dato.projects, i18n))
   root.createDataFile('data/blog.json', 'json', itemToJson(dato.blog))
-  root.createDataFile('data/posts.json', 'json', itemsToJson(dato.blogPosts))
-  root.createDataFile('data/team.json', 'json', itemToJsonI18n(dato.team, i18n))
   root.createDataFile('data/contact.json', 'json', itemToJsonI18n(dato.contact, i18n))
   root.createDataFile('data/events.json', 'json', itemsToJsonI18n(dato.events, i18n))
+  root.createDataFile('data/home.json', 'json', itemToJsonI18n(dato.home, i18n))
+  root.createDataFile('data/jobs.json', 'json', itemsToJsonI18n(dato.jobs, i18n))
+  root.createDataFile('data/posts.json', 'json', itemsToJson(dato.blogPosts))
+  root.createDataFile('data/projects.json', 'json', itemsToJsonI18n(dato.projects, i18n))
+  root.createDataFile('data/team.json', 'json', itemToJsonI18n(dato.team, i18n))
+  root.createDataFile('data/work.json', 'json', itemToJsonI18n(dato.work, i18n))
 }
 
 function itemsToJsonI18n (items, i18n) {
@@ -24,7 +25,9 @@ function itemsToJsonI18n (items, i18n) {
 }
 
 function itemsToJson (items) {
-  return items.map(itemToJson)
+  return items
+    .filter(item => item.hasOwnProperty('published') ? item.published : true)
+    .map(itemToJson)
 }
 
 function itemToJsonI18n (item, i18n) {

@@ -32,6 +32,13 @@ router.get('/home', async (req, res) => {
   res.json( pick(page[language], fields) )
 })
 
+router.get('/event-overview', async (req, res) => {
+  const { language } = req.query
+  const page = await dataLoader.load('event-overview')
+  const fields = Object.keys(schema.definitions.EventOverview.properties)
+  res.json( pick(page[language], fields) )
+})
+
 router.get('/events', async (req, res) => {
   const { language } = req.query
   const fields = fieldsToArray(req.query.fields)

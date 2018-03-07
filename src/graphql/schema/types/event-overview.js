@@ -4,7 +4,7 @@ const NavItemType = require('./nav-item')
 const SocialType = require('./social')
 
 module.exports = new GraphQLObjectType({
-  name: 'Contact',
+  name: 'EventOverview',
   description: '',
   fields: {
     body: { type: GraphQLString },

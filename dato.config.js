@@ -7,6 +7,7 @@ const languages = ['nl', 'en']
 module.exports = (dato, root, i18n) => {
   root.createDataFile('data/blog.json', 'json', itemToJson(dato.blog))
   root.createDataFile('data/contact.json', 'json', itemToJsonI18n(dato.contact, i18n))
+  root.createDataFile('data/event-overview.json', 'json', itemToJsonI18n(dato.eventOverview, i18n))
   root.createDataFile('data/events.json', 'json', itemsToJsonI18n(dato.events, i18n))
   root.createDataFile('data/home.json', 'json', itemToJsonI18n(dato.home, i18n))
   root.createDataFile('data/jobs.json', 'json', itemsToJsonI18n(dato.jobs, i18n))

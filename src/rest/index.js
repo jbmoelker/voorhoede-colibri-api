@@ -32,6 +32,14 @@ router.get('/home', async (req, res) => {
   res.json( pick(page[language], fields) )
 })
 
+router.get('/events', async (req, res) => {
+  const { language } = req.query
+  const fields = fieldsToArray(req.query.fields)
+  const itemsI18n = await dataLoader.load('events')
+  const items = itemsI18n[language].map(item => pick(item, fields))
+  res.json(items)
+})
+
 router.get('/portfolio', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('work')

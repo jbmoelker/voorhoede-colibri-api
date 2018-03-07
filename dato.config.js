@@ -12,6 +12,7 @@ module.exports = (dato, root, i18n) => {
   root.createDataFile('data/posts.json', 'json', itemsToJson(dato.blogPosts))
   root.createDataFile('data/team.json', 'json', itemToJsonI18n(dato.team, i18n))
   root.createDataFile('data/contact.json', 'json', itemToJsonI18n(dato.contact, i18n))
+  root.createDataFile('data/events.json', 'json', itemsToJsonI18n(dato.events, i18n))
 }
 
 function itemsToJsonI18n (items, i18n) {

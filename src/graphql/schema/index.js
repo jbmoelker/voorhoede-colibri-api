@@ -2,6 +2,7 @@ const dataLoader = require('../../data-loader')
 const { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } = require('graphql')
 const BlogType = require('./types/blog')
 const ContactType = require('./types/contact')
+const EventType = require('./types/event')
 const HomeType = require('./types/home')
 const LanguageType = require('./types/language')
 const PostType = require('./types/post')
@@ -23,6 +24,14 @@ const queryType = new GraphQLObjectType({
       },
       resolve: (_, args) => dataLoader.load('contact')
         .then(pageI18n => pageI18n[args.language])
+    },
+    events: {
+      type: new GraphQLList(EventType),
+      args: {
+        language: { type: new GraphQLNonNull(LanguageType) },
+      },
+      resolve: (_, args) => dataLoader.load('events')
+        .then(itemsI18n => itemsI18n[args.language])
     },
     home: {
       type: HomeType,

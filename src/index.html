@@ -10,21 +10,28 @@
 </head>
 <body>
   <header role="banner" class="app-header">
-
+    <a href="/" class="app-header__logo">
+      <strong>Voorhoede Colibri API</strong>
+    </a>
     <nav>
       <ul class="app-header__items">
-        <li><a href="/">info</a></li>
-        <li><a href="/api/v1">REST</a></li>
-        <li><a href="/graphql/">GraphQL</a></li>
+        <li class="app-header__item">
+          <a class="app-header__link app-header__link--active" href="/">info</a>
+        </li>
+        <li class="app-header__item">
+          <a class="app-header__link" href="/api/v1">REST</a>
+        </li>
+        <li class="app-header__item">
+          <a class="app-header__link" href="/graphql/">GraphQL</a>
+        </li>
       </ul>
     </nav>
   </header>
 
   <main>
     <header class="page-header">
-      <img alt="" src="/assets/images/api-diagram.png">
-      <h1>Voorhoede Colibri API</h1>
-      <p>Access Voorhoede site content via a RESTful and GraphQL interface.</p>
+      <img alt="" src="/assets/images/api-diagram.png" class="page-header__image">
+      <h1 class="page-header__title">Access Voorhoede site content via a RESTful and GraphQL interface</h1>
     </header>
 
     <section class="page-content">

@@ -4,6 +4,7 @@
     url('/assets/fonts/raleway-extrabold-webfont.woff') format("woff");
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -12,6 +13,7 @@
     url('/assets/fonts/raleway-semibold-webfont.woff') format("woff");
     font-weight: 600;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -20,6 +22,7 @@
     url('/assets/fonts/raleway-medium-webfont.woff') format("woff");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: 'Raleway';
@@ -27,6 +30,7 @@
     url('/assets/fonts/raleway-light-webfont.woff') format("woff");
     font-weight: 300;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -35,6 +39,7 @@
     url('/assets/fonts/notoserif-regular-webfont.woff') format("woff");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -43,6 +48,7 @@
     url('/assets/fonts/notoserif-bold-webfont.woff') format("woff");
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -51,6 +57,7 @@
     url('/assets/fonts/notoserif-italic-webfont.woff') format("woff");
     font-weight: 400;
     font-style: italic;
+    font-display: swap;
 }
 
 sub,
@@ -199,12 +206,43 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-header {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
   background-color: #EDDD3E;
   font-family: Raleway, sans-serif;
 }
 
+.app-header__logo {
+  display: inline-block;
+  color: #12353C;
+  margin: 10px;
+}
+
 .app-header__items {
   margin: 0;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.app-header__item {
+  display: inline-block;
+}
+
+.app-header__link {
+  display: inline-block;
+  color: #12353C;
+  margin: 10px;
+  transition: color 250ms ease,border-bottom 250ms ease;
+}
+
+.app-header__link:active,
+.app-header__link:focus,
+.app-header__link:hover,
+.app-header__link--active {
+  color: #0cafcd;
+  border-bottom: 1px solid #0cafcd;
 }
 
 .page-header {
@@ -213,9 +251,16 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
-.page-header img {
+.page-header__title {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-header__image {
   width: 100%;
   max-width: 500px;
+  margin-top: 30px;
 }
 
 .page-content {

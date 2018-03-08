@@ -245,7 +245,30 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 30px;
 }
 
-pre {
-  background-color: #f5f2f0;
+.code-block {
   padding: 1em;
+  background-color: #f5f2f0;
+  border-left: 2px solid #12353C;
+}
+
+.app-footer {
+  background-color: #12353c;
+  color: white;
+  font-family: Raleway, sans-serif;
+  text-align: center;
+  padding: 1em;
+  margin-top: 30px;
+}
+
+.app-footer__link {
+  color: white;
+  text-decoration: none;
+}
+
+.app-footer__heart {
+  position: relative;
+  top: 3px;
+  margin: .5rem 0;
+  color: red;
+  font-size: 1.35em;
 }

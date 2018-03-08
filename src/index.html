@@ -14,7 +14,7 @@
     <nav>
       <ul class="app-header__items">
         <li><a href="/">info</a></li>
-        <li><a href="/api">REST</a></li>
+        <li><a href="/api/v1">REST</a></li>
         <li><a href="/graphql/">GraphQL</a></li>
       </ul>
     </nav>
@@ -36,7 +36,7 @@
         <li>Currently all endpoints only support <code>GET</code> requests.</li>
       </ul>
       <h3>Example use</h3>
-      <pre><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/api/v1`
+      <pre class="code-block"><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/api/v1`
 fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
     method: 'GET',
     headers: {
@@ -48,7 +48,7 @@ fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
   .then(json => console.log(json))</code></pre>
       <details class="details">
         <summary>Output</summary>
-        <pre><code>[
+        <pre class="code-block"><code>[
   {
     "publishDate": "2018-01-24",
     "slug": "real-time-communication-with-server-sent-events",
@@ -58,7 +58,7 @@ fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
   { ... },
 ]</code></pre>
       </details>
-      <a href="/api" class="button button--primary">Explore REST API</a>
+      <a href="/api/v1" class="button button--primary">Explore REST API</a>
     </section>
 
     <section class="page-content">
@@ -70,7 +70,7 @@ fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
         <li>All requests must be <code>POST</code> requests.</li>
       </ul>
       <h3>Example use</h3>
-      <pre><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/graphql`
+      <pre class="code-block"><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/graphql`
 const query = `
   query {
     blog { title subtitle description keywords }
@@ -95,11 +95,18 @@ fetch(apiUrl, {
   .then(json => console.log(json.data))</code></pre>
       <details class="details">
         <summary>Output</summary>
-        <pre><code>...</code></pre>
+        <pre class="code-block"><code>...</code></pre>
       </details>
       <a href="/graphql/" class="button button--primary">Explore GraphQL API</a>
     </section>
 
   </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <p>
+      Made with <span class="app-footer__heart">❤</span>
+      by <a href="https://www.voorhoede.nl/" class="app-footer__link"><strong>De Voorhoede</strong></a>
+    </p>
+  </footer>
 </body>
 </html>

@@ -1,9 +1,11 @@
 {
   "name": "voorhoede-colibri-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A RESTful and a GraphQL API exposing Voorhoede website content.",
+  "main": "src/index.js",
   "scripts": {
+    "prebuild": "touch ./.env && npm run data",
+    "build": "echo 'todo: build version optimised for production'",
     "data": "./bin/dump-data.js",
     "deploy": "now -e NODE_ENV=production && now alias",
     "dev": "nodemon --watch src src/index.js",

@@ -46,7 +46,7 @@ module.exports = {
     title: 'Voorhoede Colibri API',
     version: 'v1',
   },
-  basePath: '/api',
+  basePath: '/api/v1',
   produces: ['application/json'],
   definitions: { Blog, Contact, Event, EventOverview, Home, Job, Post, Project, Team, Work },
   paths: {

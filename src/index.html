@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Voorhoede Colibri API</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#12353C">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/index.css">
+</head>
+<body>
+  <header role="banner" class="app-header">
+
+    <nav>
+      <ul class="app-header__items">
+        <li><a href="/">info</a></li>
+        <li><a href="/api">REST</a></li>
+        <li><a href="/graphql/">GraphQL</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <header class="page-header">
+      <img alt="" src="/assets/images/api-diagram.png">
+      <h1>Voorhoede Colibri API</h1>
+      <p>Access Voorhoede site content via a RESTful and GraphQL interface.</p>
+    </header>
+
+    <section class="page-content">
+      <h2 id="rest">RESTful API</h2>
+      <p>...</p>
+      <ul>
+        <li>Dedicated (versioned) endpoint for each collection and singleton model (e.g. <code>https://voorhoede-colibri-api.now.sh/api/v1/posts</code>).</li>
+        <li>Requests can be refined using search query parameters (e.g. <code>?fields=title,slug</code>). These are specified per endpoint.</li>
+        <li>Currently all endpoints only support <code>GET</code> requests.</li>
+      </ul>
+      <h3>Example use</h3>
+      <pre><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/api/v1`
+fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(json => console.log(json))</code></pre>
+      <details class="details">
+        <summary>Output</summary>
+        <pre><code>[
+  {
+    "publishDate": "2018-01-24",
+    "slug": "real-time-communication-with-server-sent-events",
+    "title" : "Real-time communication with Server Sent Events"
+  },
+  { ... },
+  { ... },
+]</code></pre>
+      </details>
+      <a href="/api" class="button button--primary">Explore REST API</a>
+    </section>
+
+    <section class="page-content">
+      <h2 id="graphql">GraphQL API</h2>
+      <p>...</p>
+      <ul>
+        <li>Single endpoint for every request (<code>https://voorhoede-colibri-api.now.sh/graphql</code>).</li>
+        <li>Requests can be refined precisely via the <code>query</code> sent as request <code>body</code>.</li>
+        <li>All requests must be <code>POST</code> requests.</li>
+      </ul>
+      <h3>Example use</h3>
+      <pre><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/graphql`
+const query = `
+  query {
+    blog { title subtitle description keywords }
+    posts {
+      title slug publishDate
+      authors {
+        name
+        image { url }
+      }
+    }
+  }
+`
+fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query })
+  })
+  .then(response => response.json())
+  .then(json => console.log(json.data))</code></pre>
+      <details class="details">
+        <summary>Output</summary>
+        <pre><code>...</code></pre>
+      </details>
+      <a href="/graphql/" class="button button--primary">Explore GraphQL API</a>
+    </section>
+
+  </main>
+</body>
+</html>

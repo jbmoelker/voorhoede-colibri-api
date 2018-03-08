@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const fs = require('fs')
 const graphqlRouter = require('./graphql')
 const reloadRouter = require('./reload')
 const restRouter = require('./rest')
@@ -10,20 +11,18 @@ const app = express()
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT')
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers')
   next()
 })
 
-app.use('/api/', restRouter)
+app.get('/', (req, res) => fs.createReadStream(`${__dirname}/index.html`).pipe(res))
+app.use('/assets/', express.static(`${__dirname}/assets/`))
+app.use('/favicon.ico', express.static(`${__dirname}/assets/images/favicon.ico`))
+app.get('/api/', (req, res) => res.redirect('/api/v1'))
+app.use('/api/v1/', restRouter)
 app.use('/graphql/', graphqlRouter)
 app.use('/reload-data/', reloadRouter)
-
-app.get('/', (req, res) => res.send(`
-  <h1>Voorhoede Colibri API</h1>
-  <ul>
-    <li><a href="/api">REST</a></li>
-    <li><a href="/graphql/">GraphQL</a></li>
-  </ul>
-`))
 
 app.listen(PORT, () => {
   console.log(`listening on port http://localhost:${PORT}`)

@@ -64,7 +64,7 @@ router.get('/jobs/:slug', async (req, res) => {
   res.json(item)
 })
 
-router.get('/portfolio', async (req, res) => {
+router.get('/work', async (req, res) => {
   const { language } = req.query
   const page = await dataLoader.load('work')
   res.json( page[language] )

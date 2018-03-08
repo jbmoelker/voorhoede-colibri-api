@@ -1,25 +1,25 @@
-const bodyItem = require('./body-item')
-const image = require('./image')
-const navItem = require('./nav-item')
-const person = require('./person')
-const social = require('./social')
+const BodyItem = require('./body-item')
+const Image = require('./image')
+const NavItem = require('./nav-item')
+const Person = require('./person')
+const Social = require('./social')
 
 module.exports = {
   type: 'object',
   properties: {
     body: { type: 'string' },
-    bodyItems: { type: 'array', items: bodyItem },
-    contact: person,
+    bodyItems: { type: 'array', items: BodyItem },
+    contact: Person,
     excerpt: { type: 'string' },
-    images: { type: 'array', items: image },
+    images: { type: 'array', items: Image },
     isExternalLink: { type: 'boolean' },
     keywords: { type: 'string' },
     linkText: { type: 'string' },
     linkUrl: { type: 'string' },
-    navItems: { type: 'array', items: navItem },
+    navItems: { type: 'array', items: NavItem },
     published: { type: 'boolean' },
     service : { type: 'object' },
-    social: social,
+    social: Social,
     slug: { type: 'string' },
     subtitle: { type: 'string' },
     summary: { type: 'string' },

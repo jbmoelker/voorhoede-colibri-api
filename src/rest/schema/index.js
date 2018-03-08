@@ -1,13 +1,13 @@
-const Blog = require('./models/blog')
-const Contact = require('./models/contact')
-const Event = require('./models/event')
-const EventOverview = require('./models/event-overview')
-const Home = require('./models/home')
-const Job = require('./models/job')
-const Post = require('./models/post')
-const Project = require('./models/project')
-const Team = require('./models/team')
-const Work = require('./models/work')
+const Blog = require('./definitions/blog')
+const Contact = require('./definitions/contact')
+const Event = require('./definitions/event')
+const EventOverview = require('./definitions/event-overview')
+const Home = require('./definitions/home')
+const Job = require('./definitions/job')
+const Post = require('./definitions/post')
+const Project = require('./definitions/project')
+const Team = require('./definitions/team')
+const Work = require('./definitions/work')
 
 const parameters = {
   fields: (model) => ({
@@ -148,19 +148,6 @@ module.exports = {
         }
       }
     },
-    '/portfolio': {
-      'get': {
-        parameters: [
-          parameters.language,
-        ],
-        responses: {
-          '200': {
-            description: 'Work overview',
-            schema: { '$ref': '#/definitions/Work' }
-          }
-        }
-      }
-    },
     '/posts': {
       'get': {
         parameters: [ parameters.fields(Post), parameters.limit ],
@@ -230,6 +217,19 @@ module.exports = {
           '200': {
             description: 'Team overview',
             schema: { '$ref': '#/definitions/Team' }
+          }
+        }
+      }
+    },
+    '/work': {
+      'get': {
+        parameters: [
+          parameters.language,
+        ],
+        responses: {
+          '200': {
+            description: 'Work overview',
+            schema: { '$ref': '#/definitions/Work' }
           }
         }
       }

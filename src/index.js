@@ -1,13 +1,15 @@
 require('dotenv').config()
 const express = require('express')
-const fs = require('fs')
 const graphqlRouter = require('./graphql')
+const nunjucks = require('nunjucks')
 const reloadRouter = require('./reload')
 const restRouter = require('./rest')
+const restVersion = require('./rest/version')
 
 const { PORT = 2473 } = process.env
 
 const app = express()
+const nunjucksEnv = new nunjucks.Environment(new nunjucks.FileSystemLoader(__dirname, { noCache: true }))
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -16,11 +18,11 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/', (req, res) => fs.createReadStream(`${__dirname}/index.html`).pipe(res))
+app.get('/', (req, res) => res.send(nunjucksEnv.render(`index.html`, { page: 'info', restVersion })))
 app.use('/assets/', express.static(`${__dirname}/assets/`))
 app.use('/favicon.ico', express.static(`${__dirname}/assets/images/favicon.ico`))
-app.get('/api/', (req, res) => res.redirect('/api/v1'))
-app.use('/api/v1/', restRouter)
+app.get('/api/', (req, res) => res.redirect(`/api/${restVersion}`))
+app.use(`/api/${restVersion}/`, restRouter)
 app.use('/graphql/', graphqlRouter)
 app.use('/reload-data/', reloadRouter)
 

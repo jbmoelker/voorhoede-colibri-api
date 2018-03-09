@@ -1,33 +1,8 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Voorhoede Colibri API</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#12353C">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/assets/index.css">
-</head>
-<body>
-  <header role="banner" class="app-header">
-    <a href="/" class="app-header__logo">
-      <strong>Voorhoede Colibri API</strong>
-    </a>
-    <nav>
-      <ul class="app-header__items">
-        <li class="app-header__item">
-          <a class="app-header__link app-header__link--active" href="/">info</a>
-        </li>
-        <li class="app-header__item">
-          <a class="app-header__link" href="/api/v1">REST</a>
-        </li>
-        <li class="app-header__item">
-          <a class="app-header__link" href="/graphql/">GraphQL</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+{% extends "components/page.html" %}
 
+{% block title %}Voorhoede Colibri API{% endblock %}
+
+{% block content %}
   <main>
     <header class="page-header">
       <img alt="" src="/assets/images/api-diagram.png" class="page-header__image">
@@ -38,12 +13,12 @@
       <h2 id="rest">RESTful API</h2>
       <p>...</p>
       <ul>
-        <li>Dedicated (versioned) endpoint for each collection and singleton model (e.g. <code>https://voorhoede-colibri-api.now.sh/api/v1/posts</code>).</li>
+        <li>Dedicated (versioned) endpoint for each collection and singleton model (e.g. <code>https://voorhoede-colibri-api.now.sh/api/{{ restVersion }}/posts</code>).</li>
         <li>Requests can be refined using search query parameters (e.g. <code>?fields=title,slug</code>). These are specified per endpoint.</li>
         <li>Currently all endpoints only support <code>GET</code> requests.</li>
       </ul>
       <h3>Example use</h3>
-      <pre class="code-block"><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/api/v1`
+      <pre class="code-block"><code>const apiUrl = `https://voorhoede-colibri-api.now.sh/api/{{ restVersion }}`
 fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
     method: 'GET',
     headers: {
@@ -65,7 +40,7 @@ fetch(`${apiUrl}/posts?fields=title,slug,publishDate`, {
   { ... },
 ]</code></pre>
       </details>
-      <a href="/api/v1" class="button button--primary">Explore REST API</a>
+      <a href="/api/{{ restVersion }}" class="button button--primary">Explore REST API</a>
     </section>
 
     <section class="page-content">
@@ -108,12 +83,4 @@ fetch(apiUrl, {
     </section>
 
   </main>
-
-  <footer class="app-footer" role="contentinfo">
-    <p>
-      Made with <span class="app-footer__heart">❤</span>
-      by <a href="https://www.voorhoede.nl/" class="app-footer__link"><strong>De Voorhoede</strong></a>
-    </p>
-  </footer>
-</body>
-</html>
+{% endblock %}

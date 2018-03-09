@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Voorhoede Colibri API{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#12353C">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/index.css">
+  <link rel="stylesheet" href="/assets/fonts/index.css">
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  {% include "components/app-header.html" %}
+
+  {% block content %}{% endblock %}
+
+  {% include "components/app-footer.html" %}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

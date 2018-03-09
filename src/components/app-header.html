@@ -1,0 +1,18 @@
+<header role="banner" class="app-header">
+  <a href="/" class="app-header__logo">
+    <strong>Voorhoede Colibri API</strong>
+  </a>
+  <nav>
+    <ul class="app-header__items">
+      <li class="app-header__item">
+        <a class="app-header__link {% if page === "info" %}app-header__link--active{% endif %}" href="/">info</a>
+      </li>
+      <li class="app-header__item">
+        <a class="app-header__link {% if page === "rest" %}app-header__link--active{% endif %}" href="/api/{{ restVersion }}">REST</a>
+      </li>
+      <li class="app-header__item">
+        <a class="app-header__link" href="/graphql/">GraphQL</a>
+      </li>
+    </ul>
+  </nav>
+</header>

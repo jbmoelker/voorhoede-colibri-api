@@ -8,6 +8,7 @@ const Post = require('./definitions/post')
 const Project = require('./definitions/project')
 const Team = require('./definitions/team')
 const Work = require('./definitions/work')
+const version = require('../version')
 
 const parameters = {
   fields: (model) => ({
@@ -44,9 +45,9 @@ module.exports = {
   swagger: '2.0',
   info: {
     title: 'Voorhoede Colibri API',
-    version: 'v1',
+    version: version,
   },
-  basePath: '/api/v1',
+  basePath: `/api/${version}`,
   produces: ['application/json'],
   definitions: { Blog, Contact, Event, EventOverview, Home, Job, Post, Project, Team, Work },
   paths: {

@@ -1,10 +1,16 @@
 require('dotenv').config()
 const dataLoader = require('../data-loader')
 const express = require('express')
+const nunjucks = require('nunjucks')
+const path = require('path')
 const pick = require('lodash/pick')
+const restVersion = require('./version')
 const schema = require('./schema')
 const swaggerAssetDir = require('swagger-ui-dist').absolutePath()
 
+const nunjucksEnv = new nunjucks.Environment(
+  new nunjucks.FileSystemLoader(path.join(__dirname, '..'), { noCache: true })
+)
 const router = express.Router()
 
 const sortByPublishDate = (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
@@ -18,7 +24,7 @@ const fieldsToArray = (fields) => {
   }
 }
 
-router.get('/', express.static(`${__dirname}/index.html`))
+router.get('/', (req, res) => res.send(nunjucksEnv.render(`rest/index.html`, { page: 'rest', restVersion })))
 router.use('/swagger-ui', express.static(swaggerAssetDir))
 
 router.get('/swagger.json', async (req, res) => {

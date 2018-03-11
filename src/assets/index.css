@@ -153,9 +153,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-header__logo {
-  display: inline-block;
+  display: flex;
   color: #12353C;
   margin: 10px;
+}
+
+.app-header__title {
+  margin-left: 10px;
 }
 
 .app-header__items {

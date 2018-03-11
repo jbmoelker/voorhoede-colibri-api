@@ -18,7 +18,10 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/', (req, res) => res.send(nunjucksEnv.render(`index.html`, { page: 'info', restVersion })))
+app.get('/', (req, res) => {
+  const baseUrl = `${req.protocol}://${req.get('host')}`
+  res.send(nunjucksEnv.render(`index.html`, { baseUrl, page: 'info', restVersion }))
+})
 app.use('/assets/', express.static(`${__dirname}/assets/`))
 app.use('/favicon.ico', express.static(`${__dirname}/assets/images/favicon.ico`))
 app.get('/api/', (req, res) => res.redirect(`/api/${restVersion}`))

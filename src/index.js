@@ -7,7 +7,7 @@ const reloadRouter = require('./reload')
 const restRouter = require('./rest')
 const restVersion = require('./rest/version')
 
-const { PORT = 2473 } = process.env
+const { BASE_URL, PORT = 2473 } = process.env
 
 const app = express()
 const nunjucksEnv = new nunjucks.Environment(new nunjucks.FileSystemLoader(__dirname, { noCache: true }))
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(compression())
 
 app.get('/', (req, res) => {
-  const baseUrl = `${req.protocol}://${req.get('host')}`
+  const baseUrl = BASE_URL ? BASE_URL : `${req.protocol}://${req.get('host')}`
   res.send(nunjucksEnv.render(`index.html`, { baseUrl, page: 'info', restVersion }))
 })
 app.use('/assets/', express.static(`${__dirname}/assets/`))

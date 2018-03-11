@@ -40,10 +40,11 @@ const queryType = new GraphQLObjectType({
     events: {
       type: new GraphQLList(EventType),
       args: {
+        first: { type: GraphQLInt },
         language: { type: new GraphQLNonNull(LanguageType) },
+        offset: { type: GraphQLInt },
       },
-      resolve: (_, args) => dataLoader.load('events')
-        .then(itemsI18n => itemsI18n[args.language])
+      resolve: (_, { language, first: limit, offset }) => models.Event.find({ language, limit, offset })
     },
     home: {
       type: HomeType,

@@ -97,6 +97,8 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.fields(Event),
+          parameters.limit,
+          parameters.offset,
         ],
         responses: {
           '200': {

@@ -21,6 +21,11 @@ const parameters = {
     },
     collectionFormat: 'multi'
   }),
+  offset: {
+    name: 'offset',
+    in: 'query',
+    type: 'number',
+  },
   language: {
     name: 'language',
     in: 'query',
@@ -151,7 +156,11 @@ module.exports = {
     },
     '/posts': {
       'get': {
-        parameters: [ parameters.fields(Post), parameters.limit ],
+        parameters: [
+          parameters.fields(Post),
+          parameters.limit,
+          parameters.offset,
+        ],
         responses: {
           '200': {
             description: 'All posts',
@@ -167,7 +176,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.slug,
-          parameters.fields(Post)
+          parameters.fields(Post),
         ],
         responses: {
           '200': {
@@ -182,6 +191,8 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.fields(Project),
+          parameters.limit,
+          parameters.offset,
         ],
         responses: {
           '200': {

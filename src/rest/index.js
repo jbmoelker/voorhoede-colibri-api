@@ -1,6 +1,7 @@
 require('dotenv').config()
 const dataLoader = require('../data-loader')
 const express = require('express')
+const models = require('../models')
 const nunjucks = require('nunjucks')
 const path = require('path')
 const pick = require('lodash/pick')
@@ -13,7 +14,6 @@ const nunjucksEnv = new nunjucks.Environment(
 )
 const router = express.Router()
 
-const sortByPublishDate = (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
 const fieldsToArray = (fields) => {
   if (Array.isArray(fields)) {
     return fields
@@ -23,12 +23,17 @@ const fieldsToArray = (fields) => {
     return []
   }
 }
+const toInt = (value) => isNaN(parseInt(value, 10)) ? undefined : parseInt(value, 10)
 
 router.get('/', (req, res) => res.send(nunjucksEnv.render(`rest/index.html`, { page: 'rest', restVersion })))
 router.use('/swagger-ui', express.static(swaggerAssetDir))
+router.get('/swagger.json', async (req, res) => res.json(schema))
 
-router.get('/swagger.json', async (req, res) => {
-  res.json(schema)
+router.use((req, res, next) => {
+  req.query.limit = toInt(req.query.limit)
+  req.query.offset = toInt(req.query.offset)
+  req.query.fields = fieldsToArray(req.query.fields)
+  next()
 })
 
 router.get('/home', async (req, res) => {
@@ -46,24 +51,21 @@ router.get('/event-overview', async (req, res) => {
 })
 
 router.get('/events', async (req, res) => {
-  const { language } = req.query
-  const fields = fieldsToArray(req.query.fields)
+  const { fields, language } = req.query
   const itemsI18n = await dataLoader.load('events')
   const items = itemsI18n[language].map(item => pick(item, fields))
   res.json(items)
 })
 
 router.get('/jobs', async (req, res) => {
-  const { language } = req.query
-  const fields = fieldsToArray(req.query.fields)
+  const { fields, language } = req.query
   const itemsI18n = await dataLoader.load('jobs')
   const items = itemsI18n[language].map(item => pick(item, fields))
   res.json(items)
 })
 
 router.get('/jobs/:slug', async (req, res) => {
-  const { language } = req.query
-  const fields = fieldsToArray(req.query.fields)
+  const { fields, language } = req.query
   const { slug } = req.params
   const itemsI18n = await dataLoader.load('jobs')
   const item = pick(itemsI18n[language].find(item => item.slug === slug), fields)
@@ -77,16 +79,13 @@ router.get('/work', async (req, res) => {
 })
 
 router.get('/projects', async (req, res) => {
-  const { language } = req.query
-  const fields = fieldsToArray(req.query.fields)
-  const itemsI18n = await dataLoader.load('projects')
-  const items = itemsI18n[language].map(item => pick(item, fields))
-  res.json(items)
+  const { fields, language, limit, offset } = req.query
+  const items = await models.Project.find({ language, limit, offset })
+  res.json(items.map(item => pick(item, fields)))
 })
 
 router.get('/projects/:slug', async (req, res) => {
-  const { language } = req.query
-  const fields = fieldsToArray(req.query.fields)
+  const { fields, language } = req.query
   const { slug } = req.params
   const itemsI18n = await dataLoader.load('projects')
   const item = pick(itemsI18n[language].find(item => item.slug === slug), fields)
@@ -100,23 +99,16 @@ router.get('/blog', async (req, res) => {
 })
 
 router.get('/posts', async (req, res) => {
-  const fields = fieldsToArray(req.query.fields)
-  const limit = parseInt(req.query.limit)
-  const items = await dataLoader.load('posts')
-  const realLimit = isNaN(limit) ? items.length : limit
-  const tailoredItems = items
-    .sort(sortByPublishDate)
-    .slice(0, realLimit)
-    .map(item => pick(item, fields))
-  res.json(tailoredItems)
+  const { fields, limit, offset } =  req.query
+  const items = await models.Post.find({ limit, offset })
+  res.json(items.map(item => pick(item, fields)))
 })
 
 router.get('/posts/:slug', async (req, res) => {
+  const { fields } = req.query
   const { slug } = req.params
-  const fields = fieldsToArray(req.query.fields)
-  const items = await dataLoader.load('posts')
-  const item = pick(items.find(item => item.slug === slug), fields)
-  res.json(item)
+  const item = await models.Post.findOne({ slug })
+  res.json( pick(item, fields) )
 })
 
 router.get('/team', async (req, res) => {

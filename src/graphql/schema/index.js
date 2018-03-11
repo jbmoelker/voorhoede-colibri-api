@@ -1,5 +1,5 @@
 const dataLoader = require('../../data-loader')
-const { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } = require('graphql')
+const { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } = require('graphql')
 const BlogType = require('./types/blog')
 const ContactType = require('./types/contact')
 const EventOverviewType = require('./types/event-overview')
@@ -11,6 +11,8 @@ const PostType = require('./types/post')
 const ProjectType = require('./types/project')
 const TeamType = require('./types/team')
 const WorkType = require('./types/work')
+
+const models = require('../../models')
 
 const queryType = new GraphQLObjectType({
   name: 'RootQuery',
@@ -72,24 +74,28 @@ const queryType = new GraphQLObjectType({
     },
     posts: {
       type: new GraphQLList(PostType),
-      resolve: (_, args) => dataLoader.load('posts')
+      args: {
+        first: { type: GraphQLInt },
+        offset: { type: GraphQLInt },
+      },
+      resolve: (_, { first: limit, offset }) => models.Post.find({ limit: first, offset })
     },
     post: {
       type: PostType,
       args: {
         slug: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: (_, args) => dataLoader.load('posts')
-        .then(items => items.find(item => item.slug === args.slug))
+      resolve: (_, { slug }) => models.Post.findOne({ slug })
       ,
     },
     projects: {
       type: new GraphQLList(ProjectType),
       args: {
+        first: { type: GraphQLInt },
         language: { type: new GraphQLNonNull(LanguageType) },
+        offset: { type: GraphQLInt },
       },
-      resolve: (_, args) => dataLoader.load('projects')
-        .then(itemsI18n => itemsI18n[args.language])
+      resolve: (_, { language, first: limit, offset }) => models.Project.find({ language, limit, offset })
     },
     project: {
       type: ProjectType,
@@ -97,9 +103,7 @@ const queryType = new GraphQLObjectType({
         language: { type: new GraphQLNonNull(LanguageType) },
         slug: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: (_, args) => dataLoader.load('projects')
-        .then(itemsI18n => itemsI18n[args.language])
-        .then(items => items.find(item => item.slug === args.slug))
+      resolve: (_, { language, slug }) => models.Project.findOne({ language, slug })
       ,
     },
     team: {

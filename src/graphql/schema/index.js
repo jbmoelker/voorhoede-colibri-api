@@ -58,8 +58,7 @@ const queryType = new GraphQLObjectType({
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('jobs')
-        .then(itemsI18n => itemsI18n[args.language])
+      resolve: (_, { language }) => models.Job.find({ language })
     },
     job: {
       type: JobType,
@@ -67,9 +66,7 @@ const queryType = new GraphQLObjectType({
         language: { type: new GraphQLNonNull(LanguageType) },
         slug: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: (_, args) => dataLoader.load('jobs')
-        .then(itemsI18n => itemsI18n[args.language])
-        .then(items => items.find(item => item.slug === args.slug))
+      resolve: (_, { language, slug }) => models.Job.findOne({ language, slug })
       ,
     },
     posts: {

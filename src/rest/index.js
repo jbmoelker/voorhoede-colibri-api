@@ -59,17 +59,15 @@ router.get('/events', async (req, res) => {
 
 router.get('/jobs', async (req, res) => {
   const { fields, language } = req.query
-  const itemsI18n = await dataLoader.load('jobs')
-  const items = itemsI18n[language].map(item => pick(item, fields))
-  res.json(items)
+  const items = await models.Job.find({ language })
+  res.json(items.map(item => pick(item, fields)))
 })
 
 router.get('/jobs/:slug', async (req, res) => {
   const { fields, language } = req.query
   const { slug } = req.params
-  const itemsI18n = await dataLoader.load('jobs')
-  const item = pick(itemsI18n[language].find(item => item.slug === slug), fields)
-  res.json(item)
+  const item = await models.Job.findOne({ language, slug })
+  res.json( pick(item, fields) )
 })
 
 router.get('/work', async (req, res) => {

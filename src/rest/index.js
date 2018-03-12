@@ -1,15 +1,11 @@
 require('dotenv').config()
 const express = require('express')
 const models = require('../models')
-const nunjucks = require('nunjucks')
-const path = require('path')
 const pick = require('lodash/pick')
 const restVersion = require('./version')
+const renderer = require('../renderer')
 const schema = require('./schema')
 
-const nunjucksEnv = new nunjucks.Environment(
-  new nunjucks.FileSystemLoader(path.join(__dirname, '..'), { noCache: true })
-)
 const router = express.Router()
 
 class NotFoundError extends Error {}
@@ -17,7 +13,7 @@ class NotFoundError extends Error {}
 /**
  * API Explorer UI
  */
-router.get('/', (req, res) => res.send(nunjucksEnv.render(`rest/index.html`, { page: 'rest', restVersion })))
+router.get('/', (req, res) => res.send(renderer.render(`rest/index.html`, { page: 'rest', restVersion })))
 router.use('/swagger-ui', express.static(require('swagger-ui-dist').absolutePath()))
 router.get('/swagger.json', async (req, res) => res.json(schema))
 

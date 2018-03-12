@@ -1,0 +1,17 @@
+{
+  "blog": {
+    "title": "Blog",
+    "subtitle": "In our blog posts you’ll read how we approach our projects and what techniques we use.",
+    "description": "Find out how we approach our projects and what techniques we use.",
+    "keywords": "blog, post, ..."
+  },
+  "posts": [
+    {
+      "publishDate": "2018-01-24",
+      "slug": "real-time-communication-with-server-sent-events",
+      "title" : "Real-time communication with Server Sent Events"
+    },
+    { "...": "..." },
+    { "...": "..." }
+  ]
+}

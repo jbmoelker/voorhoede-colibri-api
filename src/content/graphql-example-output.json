@@ -1,0 +1,31 @@
+{
+  "blog": {
+    "title": "Blog",
+    "subtitle": "In our blog posts you’ll read how we approach our projects and what techniques we use.",
+    "description": "Find out how we approach our projects and what techniques we use.",
+    "keywords": "blog, post, ..."
+  },
+  "posts": [
+    {
+      "title": "Real-time communication with Server Sent Events",
+      "slug": "real-time-communication-with-server-sent-events",
+      "publishDate": "2018-01-24",
+      "authors": [
+        {
+          "name": "Jesse",
+          "image": {
+            "url": "https://www.datocms-assets.com/2651/1500886662-jesse.jpg"
+          }
+        },
+        {
+          "name": "Anne",
+          "image": {
+            "url": "https://www.datocms-assets.com/2651/1500886340-anne.jpg"
+          }
+        }
+      ]
+    },
+    { "...": "..." },
+    { "...": "..." }
+  ]
+}

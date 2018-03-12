@@ -191,12 +191,20 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #EDDD3E;
   font-family: Raleway, sans-serif;
   text-align: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 5px;
 }
 
 .page-header__title {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.page-header__title a {
+  color: inherit;
+  border-bottom: 6px dashed currentColor;
 }
 
 .page-header__image {
@@ -211,6 +219,27 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: 30px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 2.5em;
+}
+
+.explore-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+}
+
+.permalink {
+  color: inherit;
+}
+
+.permalink:focus::after,
+.permalink:hover::after {
+  display: inline-block;
+  content: "🔗";
+  margin-left: .2em;
 }
 
 .button {

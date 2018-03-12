@@ -72,7 +72,7 @@ const queryType = new GraphQLObjectType({
         first: { type: GraphQLInt },
         offset: { type: GraphQLInt },
       },
-      resolve: (_, { first: limit, offset }) => models.Post.find({ limit: first, offset })
+      resolve: (_, { first: limit, offset }) => models.Post.find({ limit, offset })
     },
     post: {
       type: PostType,

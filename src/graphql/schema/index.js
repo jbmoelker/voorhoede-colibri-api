@@ -1,4 +1,3 @@
-const dataLoader = require('../../data-loader')
 const { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } = require('graphql')
 const BlogType = require('./types/blog')
 const ContactType = require('./types/contact')
@@ -19,23 +18,21 @@ const queryType = new GraphQLObjectType({
   fields: {
     blog: {
       type: BlogType,
-      resolve: (_, args) => dataLoader.load('blog')
+      resolve: (_, args) => models.Blog.findOne()
     },
     contact: {
       type: ContactType,
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('contact')
-        .then(pageI18n => pageI18n[args.language])
+      resolve: (_, { language }) => models.Contact.findOne({ language })
     },
     eventOverview: {
       type: EventOverviewType,
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('event-overview')
-        .then(pageI18n => pageI18n[args.language])
+      resolve: (_, { language }) => models.EventOverview.findOne({ language })
     },
     events: {
       type: new GraphQLList(EventType),
@@ -51,8 +48,7 @@ const queryType = new GraphQLObjectType({
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('home')
-        .then(pageI18n => pageI18n[args.language])
+      resolve: (_, { language }) => models.Home.findOne({ language })
     },
     jobs: {
       type: new GraphQLList(JobType),
@@ -109,16 +105,14 @@ const queryType = new GraphQLObjectType({
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('team')
-        .then(pageI18n => pageI18n[args.language])
+      resolve: (_, { language }) => models.Team.findOne({ language })
     },
     work: {
       type: WorkType,
       args: {
         language: { type: new GraphQLNonNull(LanguageType) },
       },
-      resolve: (_, args) => dataLoader.load('work')
-        .then(pageI18n => pageI18n[args.language])
+      resolve: (_, { language }) => models.Work.findOne({ language })
     },
   },
 })

@@ -12,6 +12,8 @@ const nunjucksEnv = new nunjucks.Environment(
 )
 const router = express.Router()
 
+class NotFoundError extends Error {}
+
 /**
  * API Explorer UI
  */
@@ -36,7 +38,19 @@ router.get('/posts', routeCollection(models.Post))
 router.get('/posts/:slug', routeItem(models.Post))
 router.get('/team', routePage(models.Team))
 router.get('/work', routePage(models.Work))
+router.use(handleErrors())
 
+
+function handleErrors () {
+  return (error, req, res, next) => {
+    if (error instanceof NotFoundError) {
+      res.status(404).json({
+        code: 'NOT_FOUND',
+        message: error.message
+      })
+    }
+  }
+}
 
 function parseQueryParams () {
   return function (req, res, next) {
@@ -56,10 +70,13 @@ function routeCollection (Model) {
 }
 
 function routeItem (Model) {
-  return async function (req, res) {
+  return async function (req, res, next) {
     const { fields, language } = req.query
     const { slug } = req.params
     const item = await Model.findOne({ language, slug })
+    if (!item) {
+      return next(new NotFoundError(`No ${Model.name} found with slug '${slug}'`))
+    }
     res.json(pick(item, fields))
   }
 }

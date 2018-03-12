@@ -1,5 +1,7 @@
 const dataLoader = require('../data-loader')
 
+const name = 'Project'
+
 async function find ({ language = 'en', offset = 0, limit }) {
   const itemsI18n = await dataLoader.load('projects')
   const items = itemsI18n[language]
@@ -17,4 +19,5 @@ async function findOne ({ language, slug }) {
 module.exports = {
   find,
   findOne,
+  name,
 }

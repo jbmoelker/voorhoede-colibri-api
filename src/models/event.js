@@ -1,5 +1,7 @@
 const dataLoader = require('../data-loader')
 
+const name = 'Event'
+
 const sortByDate = (a, b) => new Date(b.date) - new Date(a.date)
 
 async function find ({ language = 'en', limit, offset = 0 }) {
@@ -20,4 +22,5 @@ async function findOne ({ language, slug }) {
 module.exports = {
   find,
   findOne,
+  name,
 }

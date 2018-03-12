@@ -1,5 +1,7 @@
 const dataLoader = require('../data-loader')
 
+const name = 'Post'
+
 const sortByPublishDate = (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
 
 async function find ({ offset = 0, limit }) {
@@ -19,4 +21,5 @@ async function findOne ({ slug }) {
 module.exports = {
   find,
   findOne,
+  name,
 }

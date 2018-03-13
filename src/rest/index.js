@@ -8,8 +8,6 @@ const schema = require('./schema')
 
 const router = express.Router()
 
-class NotFoundError extends Error {}
-
 /**
  * API Explorer UI
  */
@@ -22,28 +20,67 @@ router.get('/swagger.json', async (req, res) => res.json(schema))
  */
 router.use(parseQueryParams())
 router.get('/blog', routePage(models.Blog))
-router.get('/contact', routePage(models.Contact))
-router.get('/event-overview', routePage(models.EventOverview))
-router.get('/events', routeCollection(models.Event))
-router.get('/home', routePage(models.Home))
-router.get('/jobs', routeCollection(models.Job))
-router.get('/jobs/:slug', routeItem(models.Job))
-router.get('/projects', routeCollection(models.Project))
-router.get('/projects/:slug', routeItem(models.Project))
+router.get('/contact', validateLanguage(), routePage(models.Contact))
+router.get('/event-overview', validateLanguage(), routePage(models.EventOverview))
+router.get('/events', validateLanguage(), routeCollection(models.Event))
+router.get('/home', validateLanguage(), routePage(models.Home))
+router.get('/jobs', validateLanguage(), routeCollection(models.Job))
+router.get('/jobs/:slug', validateLanguage(), routeItem(models.Job))
+router.get('/projects', validateLanguage(), routeCollection(models.Project))
+router.get('/projects/:slug', validateLanguage(), routeItem(models.Project))
 router.get('/posts', routeCollection(models.Post))
 router.get('/posts/:slug', routeItem(models.Post))
-router.get('/team', routePage(models.Team))
-router.get('/work', routePage(models.Work))
+router.get('/team', validateLanguage(), routePage(models.Team))
+router.get('/work', validateLanguage(), routePage(models.Work))
+router.use('/*', (req, res, next) => next(new NotFoundError(`No endpoint matching '${req.originalUrl}'`)))
 router.use(handleErrors())
 
 
+class InvalidParameterError extends Error {
+  constructor ({ message, parameter, docs }, ...params) {
+    super (message, ...params)
+    this.statusCode = 400
+    this.data = { code: 'INVALID_PARAMETER', parameter, docs }
+    Error.captureStackTrace(this, InvalidParameterError) // maintain proper stack trace
+  }
+}
+
+class MissingParameterError extends Error {
+  constructor ({ parameter, docs }, ...params) {
+    const message = `Query parameter \`${parameter}\` is required.`
+    super (message, ...params)
+    this.statusCode = 400
+    this.data = { code: 'MISSING_PARAMETER', parameter, docs }
+    Error.captureStackTrace(this, MissingParameterError) // maintain proper stack trace
+  }
+}
+
+class NotFoundError extends Error {
+  constructor (...params) {
+    super (...params)
+    this.statusCode = 404
+    this.data = { code: 'NOT_FOUND' }
+    Error.captureStackTrace(this, NotFoundError) // maintain proper stack trace
+  }
+}
+
+function getBaseUrl (req) {
+  const { BASE_URL } = process.env
+  return BASE_URL ? BASE_URL : `${req.protocol}://${req.get('host')}`
+}
+
+function getDocsUrl (req) {
+  const baseUrl = getBaseUrl(req)
+  const method = req.method.toLowerCase()
+  const path = req.route.path.replace('/','_').replace('{','_').replace('}','_')
+  return `${baseUrl}/api/${restVersion}#/default/${method}${path}`
+}
+
 function handleErrors () {
   return (error, req, res, next) => {
-    if (error instanceof NotFoundError) {
-      res.status(404).json({
-        code: 'NOT_FOUND',
-        message: error.message
-      })
+    const { data, message, statusCode } = error
+    if (statusCode && data) {
+      res.status(statusCode).json({ error: { ...data, message } })
     }
   }
 }
@@ -98,6 +135,27 @@ function fieldsToArray (fields) {
 
 function toInt (value) {
   return isNaN(parseInt(value, 10)) ? undefined : parseInt(value, 10)
+}
+
+function validateLanguage () {
+  const validLanguages = ['en', 'nl']
+  return function (req, res, next) {
+    const { language } = req.query
+    if (!language) {
+      return next (new MissingParameterError({
+        parameter: 'language',
+        docs: getDocsUrl(req),
+      }))
+    }
+    if (!validLanguages.includes(language)) {
+      return next(new InvalidParameterError({
+        message: `"${language}" is not a valid \`language\` parameter value. Use ${validLanguages.map(text => `"${text}"`).join(' or ')}.`,
+        parameter: 'language',
+        docs: getDocsUrl(req),
+      }))
+    }
+    next()
+  }
 }
 
 module.exports = router

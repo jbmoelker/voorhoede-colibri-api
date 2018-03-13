@@ -2,7 +2,7 @@ const dataLoader = require('../data-loader')
 
 const name = 'Home'
 
-async function findOne ({ language }) {
+async function findOne ({ language = 'en' }) {
   const pageI18n = await dataLoader.load('home')
   const page = pageI18n[language]
   return page

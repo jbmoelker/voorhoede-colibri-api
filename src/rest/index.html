@@ -18,8 +18,9 @@
 {% block content %}
   <div class="swagger-ui">
     <div class="wrapper">
-      <h1>REST API</h1>
-      <p>Base URL: <code>/api/{{ restVersion }}</code></p>
+    {% markdown %}
+      {% include "rest/readme.md" %}
+    {% endmarkdown %}
     </div>
   </div>
   <div id="swagger-ui"></div>

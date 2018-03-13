@@ -2,6 +2,7 @@
   "name": "voorhoede-colibri-api",
   "version": "1.0.0",
   "description": "A RESTful and a GraphQL API exposing Voorhoede website content.",
+  "private": true,
   "main": "src/index.js",
   "scripts": {
     "prebuild": "touch ./.env && npm run data",
@@ -14,7 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Jasper Moelker <jasper@voorhoede.nl> (https://voorhoede.nl/)",
+  "author": "De Voorhoede (https://voorhoede.nl/)",
   "license": "MIT",
   "dependencies": {
     "chalk": "2.3.0",

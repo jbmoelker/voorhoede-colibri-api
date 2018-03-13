@@ -27,3 +27,8 @@ After installing dependencies using `npm install` the following scripts are avai
 `deploy` | Deploys application to [now](https://zeit.co/now) and aliases latest deploy to [voorhoede-colibri-api.now.sh](https://voorhoede-colibri-api.now.sh/).
 `dev` | Starts local server with auto restart on file change on [`http://localhost:2473`](http://localhost:2473).
 `start` | Starts local server in production mode on [`http://localhost:2473`](http://localhost:2473).
+
+
+## License
+
+[MIT licensed](license) © [De Voorhoede](https://twitter.com/devoorhoede)

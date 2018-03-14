@@ -5,6 +5,7 @@ const pick = require('lodash/pick')
 const restVersion = require('./version')
 const renderer = require('../renderer')
 const schema = require('./schema')
+const URL = require('url')
 
 const router = express.Router()
 
@@ -32,13 +33,13 @@ router.get('/posts', routeCollection(models.Post))
 router.get('/posts/:slug', routeItem(models.Post))
 router.get('/team', validateLanguage(), routePage(models.Team))
 router.get('/work', validateLanguage(), routePage(models.Work))
-router.use('/*', (req, res, next) => next(new NotFoundError(`No endpoint matching '${req.originalUrl}'`)))
+router.use('/*', routeMissing())
 router.use(handleErrors())
 
 
 class InvalidParameterError extends Error {
   constructor ({ message, parameter, docs }, ...params) {
-    super (message, ...params)
+    super(message, ...params)
     this.statusCode = 400
     this.data = { code: 'INVALID_PARAMETER', parameter, docs }
     Error.captureStackTrace(this, InvalidParameterError) // maintain proper stack trace
@@ -48,7 +49,7 @@ class InvalidParameterError extends Error {
 class MissingParameterError extends Error {
   constructor ({ parameter, docs }, ...params) {
     const message = `Query parameter \`${parameter}\` is required.`
-    super (message, ...params)
+    super(message, ...params)
     this.statusCode = 400
     this.data = { code: 'MISSING_PARAMETER', parameter, docs }
     Error.captureStackTrace(this, MissingParameterError) // maintain proper stack trace
@@ -57,10 +58,19 @@ class MissingParameterError extends Error {
 
 class NotFoundError extends Error {
   constructor (...params) {
-    super (...params)
+    super(...params)
     this.statusCode = 404
     this.data = { code: 'NOT_FOUND' }
     Error.captureStackTrace(this, NotFoundError) // maintain proper stack trace
+  }
+}
+
+class RouteNotFoundError extends Error {
+  constructor ({ message, route, docs }, ...params) {
+    super(message, ...params)
+    this.statusCode = 404
+    this.data = { code: 'ROUTE_NOT_FOUND', route, docs }
+    Error.captureStackTrace(this, RouteNotFoundError) // maintain proper stack trace
   }
 }
 
@@ -72,7 +82,7 @@ function getBaseUrl (req) {
 function getDocsUrl (req) {
   const baseUrl = getBaseUrl(req)
   const method = req.method.toLowerCase()
-  const path = req.route.path.replace('/','_').replace('{','_').replace('}','_')
+  const path = req.route.path.replace('/','_')
   return `${baseUrl}/api/${restVersion}#/default/${method}${path}`
 }
 
@@ -111,6 +121,17 @@ function routeItem (Model) {
       return next(new NotFoundError(`No ${Model.name} found with slug '${slug}'`))
     }
     res.json(pick(item, fields))
+  }
+}
+
+function routeMissing () {
+  return function (req, res, next) {
+    const route = URL.parse(req.originalUrl).pathname
+    next(new RouteNotFoundError({
+      message: `No route matching '${route}'. See docs for available routes.`,
+      docs: `${getBaseUrl(req)}/api/${restVersion}`,
+      route
+    }))
   }
 }
 

@@ -12,7 +12,9 @@
     "dev": "nodemon --watch src src/index.js",
     "start": "cross-env NODE_ENV=production node src/index.js",
     "now-start": "BASE_URL=https://voorhoede-colibri-api.now.sh npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava src/**/*.test.js",
+    "watch": "npm run watch:test",
+    "watch:test": "npm test -- --watch"
   },
   "keywords": [],
   "author": "De Voorhoede (https://voorhoede.nl/)",
@@ -41,8 +43,10 @@
     "swagger-ui-dist": "3.9.0"
   },
   "devDependencies": {
+    "ava": "0.25.0",
     "nodemon": "1.14.8",
-    "now": "10.1.5"
+    "now": "10.1.5",
+    "supertest": "3.0.0"
   },
   "engines": {
     "node": ">= 8"

@@ -14,4 +14,4 @@ Promise.all([
   restRequest(`/blog`),
   restRequest(`/posts?fields=title,slug,publishDate&limit=3`)
 ])
-.then(([blog, posts]) => console.log({ blog, posts }))
+.then(([blog, { items: posts }]) => console.log({ blog, posts }))

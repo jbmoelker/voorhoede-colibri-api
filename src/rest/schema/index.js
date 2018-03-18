@@ -38,6 +38,11 @@ const parameters = {
     in: 'query',
     type: 'number',
   },
+  meta: {
+    name: 'meta',
+    in: 'query',
+    type: 'boolean',
+  },
   slug: {
     name: 'slug',
     in: 'path',
@@ -58,6 +63,9 @@ module.exports = {
   paths: {
     '/blog': {
       'get': {
+        parameters: [
+          parameters.meta,
+        ],
         responses: {
           '200': {
             description: 'Blog overview',
@@ -70,6 +78,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -83,6 +92,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -98,6 +108,7 @@ module.exports = {
           parameters.language,
           parameters.fields(Event),
           parameters.limit,
+          parameters.meta,
           parameters.offset,
         ],
         responses: {
@@ -115,6 +126,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -129,6 +141,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.fields(Job),
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -147,6 +160,7 @@ module.exports = {
           parameters.slug,
           parameters.language,
           parameters.fields(Job),
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -162,6 +176,7 @@ module.exports = {
           parameters.fields(Post),
           parameters.limit,
           parameters.offset,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -179,6 +194,7 @@ module.exports = {
         parameters: [
           parameters.slug,
           parameters.fields(Post),
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -195,6 +211,7 @@ module.exports = {
           parameters.fields(Project),
           parameters.limit,
           parameters.offset,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -213,6 +230,7 @@ module.exports = {
           parameters.slug,
           parameters.language,
           parameters.fields(Project),
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -226,6 +244,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.meta,
         ],
         responses: {
           '200': {
@@ -239,6 +258,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.meta,
         ],
         responses: {
           '200': {

@@ -1,3 +1,4 @@
+// using ava endpoint-testing recipe: https://github.com/avajs/ava/blob/master/docs/recipes/endpoint-testing.md
 const { test } = require('ava')
 const express = require('express')
 const graphqlRouter = require('./')

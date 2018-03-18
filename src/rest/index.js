@@ -23,14 +23,14 @@ router.use(parseQueryParams())
 router.get('/blog', routePage(models.Blog))
 router.get('/contact', validateLanguage(), routePage(models.Contact))
 router.get('/event-overview', validateLanguage(), routePage(models.EventOverview))
-router.get('/events', validateLanguage(), routeCollection(models.Event))
+router.get('/events', validateLanguage(), validateFields(models.Event), routeCollection(models.Event))
 router.get('/home', validateLanguage(), routePage(models.Home))
-router.get('/jobs', validateLanguage(), routeCollection(models.Job))
-router.get('/jobs/:slug', validateLanguage(), routeItem(models.Job))
-router.get('/projects', validateLanguage(), routeCollection(models.Project))
-router.get('/projects/:slug', validateLanguage(), routeItem(models.Project))
-router.get('/posts', routeCollection(models.Post))
-router.get('/posts/:slug', routeItem(models.Post))
+router.get('/jobs', validateLanguage(), validateFields(models.Job), routeCollection(models.Job))
+router.get('/jobs/:slug', validateLanguage(), validateFields(models.Job), routeItem(models.Job))
+router.get('/projects', validateLanguage(), validateFields(models.Project), routeCollection(models.Project))
+router.get('/projects/:slug', validateLanguage(), validateFields(models.Project), routeItem(models.Project))
+router.get('/posts', validateFields(models.Post), routeCollection(models.Post))
+router.get('/posts/:slug', validateFields(models.Post), routeItem(models.Post))
 router.get('/team', validateLanguage(), routePage(models.Team))
 router.get('/work', validateLanguage(), routePage(models.Work))
 router.use('/*', routeMissing())
@@ -91,6 +91,11 @@ function handleErrors () {
     const { data, message, statusCode } = error
     if (statusCode && data) {
       res.status(statusCode).json({ error: { ...data, message } })
+    } else {
+      res.status(500).json({ error: {
+        code: 'INTERNAL_ERROR',
+        message: 'An internal server error occurred.',
+      } })
     }
   }
 }
@@ -105,10 +110,13 @@ function parseQueryParams () {
 }
 
 function routeCollection (Model) {
-  return async function (req, res) {
+  return async function (req, res, next) {
     const { fields, language, limit, offset } = req.query
     const items = await Model.find({ language, limit, offset })
-    res.json( items.map(item => pick(item, fields)) )
+    if (Array.isArray(fields)) {
+      return res.json( items.map(item => pick(item, fields)) )
+    }
+    res.json(items)
   }
 }
 
@@ -120,7 +128,11 @@ function routeItem (Model) {
     if (!item) {
       return next(new NotFoundError(`No ${Model.name} found with slug '${slug}'`))
     }
-    res.json(pick(item, fields))
+    if (Array.isArray(fields)) {
+      res.json(pick(item, fields))
+    } else {
+      res.json(item)
+    }
   }
 }
 
@@ -150,12 +162,29 @@ function fieldsToArray (fields) {
   } else if (typeof fields === 'string') {
     return fields.split(',').map(field => field.trim())
   } else {
-    return []
+    return undefined
   }
 }
 
 function toInt (value) {
   return isNaN(parseInt(value, 10)) ? undefined : parseInt(value, 10)
+}
+
+function validateFields (Model) {
+  return function (req, res, next) {
+    const { fields } = req.query
+    if (!Array.isArray(fields)) return next()
+    const availableFields = Object.keys(schema.definitions[Model.name].properties)
+    const invalidFields = fields.filter(field => !availableFields.includes(field))
+    if (invalidFields.length) {
+      return next(new InvalidParameterError({
+        message: `${invalidFields.map(field => `"${field}"`).join(', ')} ${invalidFields.length === 1 ? 'is' : 'are'} not a valid \`fields\` parameter value. See docs for available \`fields\`.`,
+        parameter: 'fields',
+        docs: getDocsUrl(req),
+      }))
+    }
+    next()
+  }
 }
 
 function validateLanguage () {

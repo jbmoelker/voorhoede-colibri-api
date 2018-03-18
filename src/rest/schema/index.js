@@ -31,7 +31,7 @@ const parameters = {
     in: 'query',
     type: 'string',
     enum: ['en', 'nl'],
-    default: 'en',
+    required: true,
   },
   limit: {
     name: 'limit',

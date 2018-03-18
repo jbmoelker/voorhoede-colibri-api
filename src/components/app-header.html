@@ -18,7 +18,7 @@
         <a class="app-header__link {% if page === "rest" %}app-header__link--active{% endif %}" href="/api/{{ restVersion }}">REST</a>
       </li>
       <li class="app-header__item">
-        <a class="app-header__link" href="/graphql/">GraphQL</a>
+        <a class="app-header__link {% if page === "graphql" %}app-header__link--active{% endif %}" href="/graphql/">GraphQL</a>
       </li>
     </ul>
   </nav>

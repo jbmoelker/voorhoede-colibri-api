@@ -4,7 +4,9 @@
 
 The API is backed by a [DatoCMS instance](https://voorhoede-ocelot-cms.admin.datocms.com) where content is managed.
 
-The API and its documentation is available on [voorhoede-colibri-api.now.sh](https://voorhoede-colibri-api.now.sh/).
+The API and its documentation is available on [voorhoede-colibri-api.now.sh](https://voorhoede-colibri-api.now.sh/). Note that because it runs on the free tier of Now, it needs to spin up if it isn’t used for a while — which makes it slow the first time ’round 😴.
+
+![Devices and appliances connected to the API](src/assets/images/api-diagram.png)
 
 
 ## Development
@@ -27,6 +29,8 @@ After installing dependencies using `npm install` the following scripts are avai
 `deploy` | Deploys application to [now](https://zeit.co/now) and aliases latest deploy to [voorhoede-colibri-api.now.sh](https://voorhoede-colibri-api.now.sh/).
 `dev` | Starts local server with auto restart on file change on [`http://localhost:2473`](http://localhost:2473).
 `start` | Starts local server in production mode on [`http://localhost:2473`](http://localhost:2473).
+`test` | Run automated endpoint tests.
+`watch` | Run `test`s on file changes.
 
 
 ## License

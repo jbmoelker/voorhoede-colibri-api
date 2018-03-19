@@ -58,6 +58,9 @@ module.exports = {
   paths: {
     '/blog': {
       'get': {
+        parameters: [
+          parameters.fields(Blog),
+        ],
         responses: {
           '200': {
             description: 'Blog overview',
@@ -70,6 +73,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.fields(Contact),
         ],
         responses: {
           '200': {
@@ -83,6 +87,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.fields(EventOverview),
         ],
         responses: {
           '200': {
@@ -115,6 +120,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.fields(Home),
         ],
         responses: {
           '200': {
@@ -226,6 +232,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.fields(Team),
         ],
         responses: {
           '200': {
@@ -239,6 +246,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.language,
+          parameters.fields(Work),
         ],
         responses: {
           '200': {

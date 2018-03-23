@@ -45,7 +45,22 @@ function itemToJson (item) {
   itemJson.body = body
   itemJson.bodyItems = bodyToItems(body, { images: itemJson.images })
   itemJson.navItems = listHeadings(body)
-  return removeSeoMetaTags(itemJson)
+  return removePrivateProperties(removeSeoMetaTags(itemJson))
+}
+
+function removePrivateProperties (item) {
+  const privateProperties = ['id', 'updatedAt', 'createdAt']
+  if (typeof item === 'object') {
+    privateProperties.forEach(key => delete item[key])
+    Object.keys(item).forEach(key => {
+      if (Array.isArray(item[key])) {
+        item[key].forEach(removePrivateProperties)
+      } else if (item[key] && typeof item[key] === 'object') {
+        removePrivateProperties(item[key])
+      }
+    })
+  }
+  return item
 }
 
 function removeSeoMetaTags (item) {

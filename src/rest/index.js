@@ -19,19 +19,19 @@ router.get('/swagger.json', async (req, res) => res.json(schema))
 /**
  * API routes
  */
-router.get('/blog', routePage(models.Blog))
-router.get('/contact', validateLanguage(), routePage(models.Contact))
-router.get('/event-overview', validateLanguage(), routePage(models.EventOverview))
+router.get('/blog', validateFields(models.Blog), routePage(models.Blog))
+router.get('/contact', validateLanguage(), validateFields(models.Contact), routePage(models.Contact))
+router.get('/event-overview', validateLanguage(), validateFields(models.EventOverview), routePage(models.EventOverview))
 router.get('/events', validateLanguage(), validateFields(models.Event), routeCollection(models.Event))
-router.get('/home', validateLanguage(), routePage(models.Home))
+router.get('/home', validateLanguage(), validateFields(models.Home), routePage(models.Home))
 router.get('/jobs', validateLanguage(), validateFields(models.Job), routeCollection(models.Job))
 router.get('/jobs/:slug', validateLanguage(), validateFields(models.Job), routeItem(models.Job))
 router.get('/projects', validateLanguage(), validateFields(models.Project), validatePagination(), routeCollection(models.Project))
 router.get('/projects/:slug', validateLanguage(), validateFields(models.Project), routeItem(models.Project))
 router.get('/posts', validateFields(models.Post), validatePagination(), routeCollection(models.Post))
 router.get('/posts/:slug', validateFields(models.Post), routeItem(models.Post))
-router.get('/team', validateLanguage(), routePage(models.Team))
-router.get('/work', validateLanguage(), routePage(models.Work))
+router.get('/team', validateLanguage(), validateFields(models.Team), routePage(models.Team))
+router.get('/work', validateLanguage(), validateFields(models.Work), routePage(models.Work))
 router.use('/*', routeMissing())
 router.use(handleErrors())
 
@@ -139,9 +139,9 @@ function routeMissing () {
 
 function routePage (Model) {
   return async function (req, res) {
-    const { language } = req.query
+    const defaultFields = Object.keys(schema.definitions[Model.name].properties)
+    const { language, fields = defaultFields } = req.query
     const page = await Model.findOne({ language })
-    const fields = Object.keys(schema.definitions[Model.name].properties)
     res.json(pick(page, fields))
   }
 }

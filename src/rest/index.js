@@ -19,7 +19,6 @@ router.get('/swagger.json', async (req, res) => res.json(schema))
 /**
  * API routes
  */
-router.use(parseQueryParams())
 router.get('/blog', routePage(models.Blog))
 router.get('/contact', validateLanguage(), routePage(models.Contact))
 router.get('/event-overview', validateLanguage(), routePage(models.EventOverview))
@@ -27,9 +26,9 @@ router.get('/events', validateLanguage(), validateFields(models.Event), routeCol
 router.get('/home', validateLanguage(), routePage(models.Home))
 router.get('/jobs', validateLanguage(), validateFields(models.Job), routeCollection(models.Job))
 router.get('/jobs/:slug', validateLanguage(), validateFields(models.Job), routeItem(models.Job))
-router.get('/projects', validateLanguage(), validateFields(models.Project), routeCollection(models.Project))
+router.get('/projects', validateLanguage(), validateFields(models.Project), validatePagination(), routeCollection(models.Project))
 router.get('/projects/:slug', validateLanguage(), validateFields(models.Project), routeItem(models.Project))
-router.get('/posts', validateFields(models.Post), routeCollection(models.Post))
+router.get('/posts', validateFields(models.Post), validatePagination(), routeCollection(models.Post))
 router.get('/posts/:slug', validateFields(models.Post), routeItem(models.Post))
 router.get('/team', validateLanguage(), routePage(models.Team))
 router.get('/work', validateLanguage(), routePage(models.Work))
@@ -100,15 +99,6 @@ function handleErrors () {
   }
 }
 
-function parseQueryParams () {
-  return function (req, res, next) {
-    req.query.limit = toInt(req.query.limit)
-    req.query.offset = toInt(req.query.offset)
-    req.query.fields = fieldsToArray(req.query.fields)
-    next()
-  }
-}
-
 function routeCollection (Model) {
   return async function (req, res, next) {
     const { fields, language, limit, offset } = req.query
@@ -166,13 +156,17 @@ function fieldsToArray (fields) {
   }
 }
 
+function isValidInt (value) {
+  return !isNaN(parseInt(value, 10))
+}
+
 function toInt (value) {
   return isNaN(parseInt(value, 10)) ? undefined : parseInt(value, 10)
 }
 
 function validateFields (Model) {
   return function (req, res, next) {
-    const { fields } = req.query
+    const fields = fieldsToArray(req.query.fields)
     if (!Array.isArray(fields)) return next()
     const availableFields = Object.keys(schema.definitions[Model.name].properties)
     const invalidFields = fields.filter(field => !availableFields.includes(field))
@@ -183,6 +177,7 @@ function validateFields (Model) {
         docs: getDocsUrl(req),
       }))
     }
+    req.query.fields = fields
     next()
   }
 }
@@ -204,6 +199,28 @@ function validateLanguage () {
         docs: getDocsUrl(req),
       }))
     }
+    next()
+  }
+}
+
+function validatePagination () {
+  const parameters = ['limit', 'offset']
+  return function (req, res, next) {
+
+    parameters.forEach(parameter => {
+      const value = req.query[parameter]
+      if (value && !isValidInt(value)) {
+        return next(new InvalidParameterError({
+          message: `"${value}" is not a valid \`${parameter}\` parameter value. \`${parameter}\` must be a number.`,
+          parameter,
+          docs: getDocsUrl(req),
+        }))
+      }
+    })
+
+    req.query.limit = toInt(req.query.limit)
+    req.query.offset = toInt(req.query.offset)
+
     next()
   }
 }

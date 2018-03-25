@@ -81,7 +81,7 @@ function getBaseUrl (req) {
 function getDocsUrl (req) {
   const baseUrl = getBaseUrl(req)
   const method = req.method.toLowerCase()
-  const path = req.route.path.replace('/','_')
+  const path = req.route.path.replace(/\//g,'_').replace(':slug', '_slug_')
   return `${baseUrl}/api/${restVersion}#/default/${method}${path}`
 }
 

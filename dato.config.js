@@ -40,12 +40,41 @@ function itemToJsonI18n (item, i18n) {
 }
 
 function itemToJson (item) {
-  const itemJson = item.toMap()
-  const body = markdownToHtml(item.body)
-  itemJson.body = body
-  itemJson.bodyItems = bodyToItems(body, { images: itemJson.images })
-  itemJson.navItems = listHeadings(body)
-  return removePrivateProperties(removeSeoMetaTags(itemJson))
+  return [item.toMap()] // use temporary array to chain transformations using .map
+    .map(formatItemBody)
+    .map(item => formatItemPropertiesAsHtml(item, ['summary', 'teaser', 'techniques']))
+    .map(removePrivateProperties)
+    .map(removeSeoMetaTags)
+    .pop()
+}
+
+function formatItemBody (item) {
+  if (typeof item === 'object') {
+    Object.keys(item).forEach(key => {
+      if (key === 'body') {
+        const body = markdownToHtml(item.body)
+        item.body = body
+        item.bodyItems = bodyToItems(body, { images: item.images || [] })
+        item.navItems = listHeadings(body)
+      } else if (item[key] && typeof item[key] === 'object') {
+        formatItemBody(item[key])
+      }
+    })
+  }
+  return item
+}
+
+function formatItemPropertiesAsHtml (item, propertiesToFormat) {
+  if (typeof item === 'object') {
+    Object.keys(item).forEach(key => {
+      if (propertiesToFormat.includes(key)) {
+        item[key] = item[key] ? markdownToHtml(item[key]) : null
+      } else if (item[key] && typeof item[key] === 'object') {
+        formatItemPropertiesAsHtml(item[key], propertiesToFormat)
+      }
+    })
+  }
+  return item
 }
 
 function removePrivateProperties (item) {

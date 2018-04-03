@@ -98,7 +98,7 @@ function getCollectionItemMeta ({ item, Model, req }) {
   ].filter(Boolean)
   const url = `${getBaseUrl(req)}/api/${restVersion}${req.route.path}/${item.slug}?${queryParams.join('&')}`
   return {
-    kind: Model.name,
+    type: Model.name,
     self: item.slug ? url : undefined
   }
 }
@@ -122,7 +122,7 @@ function routeCollection (Model) {
     const { fields, language, limit, offset } = req.query
     const useMeta = req.query.meta
     const meta = useMeta ? {
-      kind: `${Model.name}Collection`,
+      type: `${Model.name}Collection`,
       self: `${getBaseUrl(req)}${req.originalUrl}`
     } : undefined
     const items = (await Model.find({ language, limit, offset }))
@@ -144,7 +144,7 @@ function routeItem (Model) {
       return next(new NotFoundError(`No ${Model.name} found with slug '${slug}'`))
     }
     const meta = useMeta ? {
-      kind: Model.name,
+      type: Model.name,
       self: `${getBaseUrl(req)}${req.originalUrl}`
     } : undefined
     if (Array.isArray(fields)) {
@@ -172,7 +172,7 @@ function routePage (Model) {
     const { language, fields = defaultFields } = req.query
     const useMeta = req.query.meta
     const meta = useMeta ? {
-      kind: Model.name,
+      type: Model.name,
       self: `${getBaseUrl(req)}${req.originalUrl}`
     } : undefined
     const page = await Model.findOne({ language })

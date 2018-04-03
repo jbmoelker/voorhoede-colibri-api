@@ -90,9 +90,9 @@ test('Includes meta properties if `meta` parameter is true', async t => {
   const res = await getRequest('/projects?language=en&meta=true')
   const { items, meta } = res.body
   t.is(res.status, 200)
-  t.is(meta.kind, 'ProjectCollection')
+  t.is(meta.type, 'ProjectCollection')
   t.true(isValidUrl(meta.self))
-  t.is(items[0].meta.kind, 'Project')
+  t.is(items[0].meta.type, 'Project')
   t.true(isValidUrl(items[0].meta.self))
 })
 

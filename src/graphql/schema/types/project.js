@@ -3,6 +3,7 @@ const BodyItemType = require('./body-item')
 const ImageType = require('./image')
 const NavItemType = require('./nav-item')
 const ServiceType = require('./service')
+const SlugI18nType = require('./slug-i18n')
 const SocialType = require('./social')
 const PersonType = require('./person')
 
@@ -16,6 +17,7 @@ module.exports = new GraphQLObjectType({
     social: { type: SocialType },
     published: { type: GraphQLBoolean },
     slug: { type: GraphQLString },
+    slugI18n: { type: SlugI18nType },
     title: { type: GraphQLString },
     subtitle: { type: GraphQLString },
     excerpt: { type: GraphQLString },

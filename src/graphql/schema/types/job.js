@@ -2,9 +2,10 @@ const { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString, GraphQLObjectTyp
 const BodyItemType = require('./body-item')
 const ImageType = require('./image')
 const NavItemType = require('./nav-item')
-const ServiceType = require('./service')
-const SocialType = require('./social')
 const PersonType = require('./person')
+const ServiceType = require('./service')
+const SlugI18nType = require('./slug-i18n')
+const SocialType = require('./social')
 
 module.exports = new GraphQLObjectType({
   name: 'Job',
@@ -18,6 +19,7 @@ module.exports = new GraphQLObjectType({
     order: { type: GraphQLInt },
     published: { type: GraphQLBoolean },
     slug: { type: GraphQLString },
+    slugI18n: { type: SlugI18nType },
     teaser: { type: GraphQLString },
     title: { type: GraphQLString },
     url: { type: GraphQLString },

@@ -2,6 +2,7 @@ const BodyItem = require('./body-item')
 const Image = require('./image')
 const NavItem = require('./nav-item')
 const Person = require('./person')
+const SlugI18n = require('./slug-i18n')
 const Social = require('./social')
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
     service : { type: 'object' },
     social: Social,
     slug: { type: 'string' },
+    slugI18n: SlugI18n,
     subtitle: { type: 'string' },
     summary: { type: 'string' },
     techniques: { type: 'string' },

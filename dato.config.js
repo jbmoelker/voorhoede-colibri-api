@@ -20,15 +20,15 @@ module.exports = (dato, root, i18n) => {
 function itemsToJsonI18n (items, i18n) {
   return languages.reduce((itemsI18n, language) => {
     i18n.locale = language
-    itemsI18n[language] = itemsToJson(items)
+    itemsI18n[language] = itemsToJson(items, i18n)
     return itemsI18n
   }, {})
 }
 
-function itemsToJson (items) {
+function itemsToJson (items, i18n) {
   return items
     .filter(item => item.hasOwnProperty('published') ? item.published : true)
-    .map(itemToJson)
+    .map(item => itemToJson(item, i18n))
 }
 
 function itemToJsonI18n (item, i18n) {
@@ -39,13 +39,24 @@ function itemToJsonI18n (item, i18n) {
   }, {})
 }
 
-function itemToJson (item) {
+function itemToJson (item, i18n) {
   const itemJson = item.toMap()
   const body = markdownToHtml(item.body)
   itemJson.body = body
   itemJson.bodyItems = bodyToItems(body, { images: itemJson.images })
   itemJson.navItems = listHeadings(body)
+  itemJson.slugI18n = getSlugI18n(item, i18n)
   return removePrivateProperties(removeSeoMetaTags(itemJson))
+}
+
+function getSlugI18n (item, i18n) {
+  if (!i18n) return
+  return languages.reduce((slugI18n, language) => {
+    i18n.withLocale(language, () => {
+      slugI18n[language] = item.slug
+    })
+    return slugI18n
+  }, {})
 }
 
 function removePrivateProperties (item) {

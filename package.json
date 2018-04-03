@@ -11,7 +11,8 @@
     "deploy": "now -e NODE_ENV=production && now alias",
     "dev": "nodemon --watch src src/index.js",
     "start": "cross-env NODE_ENV=production node src/index.js",
-    "now-start": "BASE_URL=https://voorhoede-colibri-api.now.sh npm start",
+    "now-start": "BASE_URL=$NOW_URL npm start",
+    "precommit": "npm test",
     "test": "ava src/**/*.test.js",
     "watch": "npm run watch:test",
     "watch:test": "npm test -- --watch"
@@ -19,6 +20,10 @@
   "keywords": [],
   "author": "De Voorhoede (https://voorhoede.nl/)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voorhoede/voorhoede-colibri-api"
+  },
   "dependencies": {
     "chalk": "2.3.0",
     "cheerio": "1.0.0-rc.2",
@@ -45,6 +50,7 @@
   "devDependencies": {
     "@jbmoelker/now-travis": "1.2.3",
     "ava": "0.25.0",
+    "husky": "0.14.3",
     "nodemon": "1.14.8",
     "now": "10.1.5",
     "supertest": "3.0.0"

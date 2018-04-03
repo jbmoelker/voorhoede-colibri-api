@@ -61,6 +61,24 @@ test('Invalid fields parameter returns INVALID_PARAMETER error', async t => {
   t.is(typeof error.message, 'string')
 })
 
+test('Invalid limit parameter returns INVALID_PARAMETER error', async t => {
+  const res = await getRequest('/projects?language=en&fields=title&limit=a')
+  const { error } = res.body
+  t.is(res.status, 400)
+  t.is(error.code, 'INVALID_PARAMETER')
+  t.is(error.parameter, 'limit')
+  t.is(typeof error.message, 'string')
+})
+
+test('Invalid offset parameter returns INVALID_PARAMETER error', async t => {
+  const res = await getRequest('/projects?language=en&fields=title&limit=1&offset=a')
+  const { error } = res.body
+  t.is(res.status, 400)
+  t.is(error.code, 'INVALID_PARAMETER')
+  t.is(error.parameter, 'offset')
+  t.is(typeof error.message, 'string')
+})
+
 test('Returns list of projects', async t => {
   const res = await getRequest('/projects?language=en')
   t.is(res.status, 200)
@@ -83,6 +101,17 @@ test('Includes no meta properties if `meta` parameter is falsy', async t => {
   t.is(res.status, 200)
   t.is(res.body.meta, undefined)
   t.is(res.body.items[0].meta, undefined)
+})
+
+test('Returns a paginated list of projects', async t => {
+  const res = await getRequest('/projects?language=en&limit=3')
+  const { items } = res.body
+  t.is(res.status, 200)
+  t.true(Array.isArray(items))
+  t.is(items.length, 3)
+  t.falsy(res.body.error)
+  const resOffset = await getRequest('/projects?language=en&limit=3&offset=2')
+  t.deepEqual(items[2], resOffset.body.items[0])
 })
 
 test('Returns a single project', async t => {

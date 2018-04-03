@@ -20,15 +20,15 @@ module.exports = (dato, root, i18n) => {
 function itemsToJsonI18n (items, i18n) {
   return languages.reduce((itemsI18n, language) => {
     i18n.locale = language
-    itemsI18n[language] = itemsToJson(items)
+    itemsI18n[language] = itemsToJson(items, i18n)
     return itemsI18n
   }, {})
 }
 
-function itemsToJson (items) {
+function itemsToJson (items, i18n) {
   return items
     .filter(item => item.hasOwnProperty('published') ? item.published : true)
-    .map(itemToJson)
+    .map(item => itemToJson(item, i18n))
 }
 
 function itemToJsonI18n (item, i18n) {
@@ -39,13 +39,68 @@ function itemToJsonI18n (item, i18n) {
   }, {})
 }
 
-function itemToJson (item) {
-  const itemJson = item.toMap()
-  const body = markdownToHtml(item.body)
-  itemJson.body = body
-  itemJson.bodyItems = bodyToItems(body, { images: itemJson.images })
-  itemJson.navItems = listHeadings(body)
-  return removeSeoMetaTags(itemJson)
+function itemToJson (item, i18n) {
+  return [item.toMap()] // use temporary array to chain transformations using .map
+    .map(formatItemBody)
+    .map(itemJson => ({ ...itemJson, slugI18n: getSlugI18n(item, i18n) }))
+    .map(itemJson => formatItemPropertiesAsHtml(itemJson, ['summary', 'teaser', 'techniques']))
+    .map(removePrivateProperties)
+    .map(removeSeoMetaTags)
+    .pop()
+}
+
+function formatItemBody (item) {
+  if (typeof item === 'object') {
+    Object.keys(item).forEach(key => {
+      if (key === 'body') {
+        const body = markdownToHtml(item.body)
+        item.body = body
+        item.bodyItems = bodyToItems(body, { images: item.images || [] })
+        item.navItems = listHeadings(body)
+      } else if (item[key] && typeof item[key] === 'object') {
+        formatItemBody(item[key])
+      }
+    })
+  }
+  return item
+}
+
+function formatItemPropertiesAsHtml (item, propertiesToFormat) {
+  if (typeof item === 'object') {
+    Object.keys(item).forEach(key => {
+      if (propertiesToFormat.includes(key)) {
+        item[key] = item[key] ? markdownToHtml(item[key]) : null
+      } else if (item[key] && typeof item[key] === 'object') {
+        formatItemPropertiesAsHtml(item[key], propertiesToFormat)
+      }
+    })
+  }
+  return item
+}
+
+function getSlugI18n (item, i18n) {
+  if (!i18n) return
+  return languages.reduce((slugI18n, language) => {
+    i18n.withLocale(language, () => {
+      slugI18n[language] = item.slug
+    })
+    return slugI18n
+  }, {})
+}
+
+function removePrivateProperties (item) {
+  const privateProperties = ['id', 'updatedAt', 'createdAt']
+  if (typeof item === 'object') {
+    privateProperties.forEach(key => delete item[key])
+    Object.keys(item).forEach(key => {
+      if (Array.isArray(item[key])) {
+        item[key].forEach(removePrivateProperties)
+      } else if (item[key] && typeof item[key] === 'object') {
+        removePrivateProperties(item[key])
+      }
+    })
+  }
+  return item
 }
 
 function removeSeoMetaTags (item) {

@@ -65,6 +65,7 @@ module.exports = {
       'get': {
         parameters: [
           parameters.meta,
+          parameters.fields(Blog),
         ],
         responses: {
           '200': {
@@ -79,6 +80,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.meta,
+          parameters.fields(Contact),
         ],
         responses: {
           '200': {
@@ -93,6 +95,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.meta,
+          parameters.fields(EventOverview),
         ],
         responses: {
           '200': {
@@ -127,6 +130,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.meta,
+          parameters.fields(Home),
         ],
         responses: {
           '200': {
@@ -245,6 +249,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.meta,
+          parameters.fields(Team),
         ],
         responses: {
           '200': {
@@ -259,6 +264,7 @@ module.exports = {
         parameters: [
           parameters.language,
           parameters.meta,
+          parameters.fields(Work),
         ],
         responses: {
           '200': {

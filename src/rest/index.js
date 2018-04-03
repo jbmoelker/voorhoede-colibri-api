@@ -19,20 +19,19 @@ router.get('/swagger.json', async (req, res) => res.json(schema))
 /**
  * API routes
  */
-router.use(parseQueryParams())
-router.get('/blog', routePage(models.Blog))
-router.get('/contact', validateLanguage(), routePage(models.Contact))
-router.get('/event-overview', validateLanguage(), routePage(models.EventOverview))
+router.get('/blog', validateFields(models.Blog), routePage(models.Blog))
+router.get('/contact', validateLanguage(), validateFields(models.Contact), routePage(models.Contact))
+router.get('/event-overview', validateLanguage(), validateFields(models.EventOverview), routePage(models.EventOverview))
 router.get('/events', validateLanguage(), validateFields(models.Event), routeCollection(models.Event))
-router.get('/home', validateLanguage(), routePage(models.Home))
+router.get('/home', validateLanguage(), validateFields(models.Home), routePage(models.Home))
 router.get('/jobs', validateLanguage(), validateFields(models.Job), routeCollection(models.Job))
 router.get('/jobs/:slug', validateLanguage(), validateFields(models.Job), routeItem(models.Job))
-router.get('/projects', validateLanguage(), validateFields(models.Project), routeCollection(models.Project))
+router.get('/projects', validateLanguage(), validateFields(models.Project), validatePagination(), routeCollection(models.Project))
 router.get('/projects/:slug', validateLanguage(), validateFields(models.Project), routeItem(models.Project))
-router.get('/posts', validateFields(models.Post), routeCollection(models.Post))
+router.get('/posts', validateFields(models.Post), validatePagination(), routeCollection(models.Post))
 router.get('/posts/:slug', validateFields(models.Post), routeItem(models.Post))
-router.get('/team', validateLanguage(), routePage(models.Team))
-router.get('/work', validateLanguage(), routePage(models.Work))
+router.get('/team', validateLanguage(), validateFields(models.Team), routePage(models.Team))
+router.get('/work', validateLanguage(), validateFields(models.Work), routePage(models.Work))
 router.use('/*', routeMissing())
 router.use(handleErrors())
 
@@ -82,7 +81,7 @@ function getBaseUrl (req) {
 function getDocsUrl (req) {
   const baseUrl = getBaseUrl(req)
   const method = req.method.toLowerCase()
-  const path = req.route.path.replace('/','_')
+  const path = req.route.path.replace(/\//g,'_').replace(':slug', '_slug_')
   return `${baseUrl}/api/${restVersion}#/default/${method}${path}`
 }
 
@@ -115,16 +114,6 @@ function handleErrors () {
         message: 'An internal server error occurred.',
       } })
     }
-  }
-}
-
-function parseQueryParams () {
-  return function (req, res, next) {
-    req.query.limit = toInt(req.query.limit)
-    req.query.offset = toInt(req.query.offset)
-    req.query.fields = fieldsToArray(req.query.fields)
-    req.query.meta = req.query.meta && req.query.meta === 'true'
-    next()
   }
 }
 
@@ -179,14 +168,14 @@ function routeMissing () {
 
 function routePage (Model) {
   return async function (req, res) {
-    const { language } = req.query
+    const defaultFields = Object.keys(schema.definitions[Model.name].properties)
+    const { language, fields = defaultFields } = req.query
     const useMeta = req.query.meta
     const meta = useMeta ? {
       kind: Model.name,
       self: `${getBaseUrl(req)}${req.originalUrl}`
     } : undefined
     const page = await Model.findOne({ language })
-    const fields = Object.keys(schema.definitions[Model.name].properties)
     res.json({ meta, ...pick(page, fields) })
   }
 }
@@ -201,13 +190,17 @@ function fieldsToArray (fields) {
   }
 }
 
+function isValidInt (value) {
+  return !isNaN(parseInt(value, 10))
+}
+
 function toInt (value) {
   return isNaN(parseInt(value, 10)) ? undefined : parseInt(value, 10)
 }
 
 function validateFields (Model) {
   return function (req, res, next) {
-    const { fields } = req.query
+    const fields = fieldsToArray(req.query.fields)
     if (!Array.isArray(fields)) return next()
     const availableFields = Object.keys(schema.definitions[Model.name].properties)
     const invalidFields = fields.filter(field => !availableFields.includes(field))
@@ -218,6 +211,7 @@ function validateFields (Model) {
         docs: getDocsUrl(req),
       }))
     }
+    req.query.fields = fields
     next()
   }
 }
@@ -239,6 +233,28 @@ function validateLanguage () {
         docs: getDocsUrl(req),
       }))
     }
+    next()
+  }
+}
+
+function validatePagination () {
+  const parameters = ['limit', 'offset']
+  return function (req, res, next) {
+
+    parameters.forEach(parameter => {
+      const value = req.query[parameter]
+      if (value && !isValidInt(value)) {
+        return next(new InvalidParameterError({
+          message: `"${value}" is not a valid \`${parameter}\` parameter value. \`${parameter}\` must be a number.`,
+          parameter,
+          docs: getDocsUrl(req),
+        }))
+      }
+    })
+
+    req.query.limit = toInt(req.query.limit)
+    req.query.offset = toInt(req.query.offset)
+
     next()
   }
 }

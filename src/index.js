@@ -1,5 +1,6 @@
 require('dotenv').config()
 const compression = require('compression')
+const cors = require('cors');
 const express = require('express')
 const helmet = require('helmet')
 const graphqlRouter = require('./graphql')
@@ -13,12 +14,11 @@ const { BASE_URL, PORT = 2473 } = process.env
 const app = express()
 
 app.use(helmet())
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT')
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers')
-  next()
-})
+app.use(cors({
+  origin: '*',
+  methods: 'GET,HEAD,OPTIONS,POST,PUT',
+  allowedHeaders: 'Access-Control-Allow-Headers,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers'
+}))
 app.use(compression())
 
 app.get('/', (req, res) => {

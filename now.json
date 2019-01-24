@@ -1,5 +1,6 @@
 {
-  "name":  "voorhoede-colibri-api",
+  "version": 1,
+  "name": "voorhoede-colibri-api",
   "alias": "voorhoede-colibri-api",
   "env": {
     "DATO_API_TOKEN": "@dato-api-token",

@@ -19,5 +19,5 @@ script:
   - npm test
 
 after_success:
-  - test $TRAVIS_EVENT_TYPE = "pull_request" && echo "Deploy PR to Now" && now-travis -T devoorhoede --env DATO_API_TOKEN --env RELOAD_TOKEN
-  - test $TRAVIS_EVENT_TYPE = "push" && test $TRAVIS_BRANCH = "master" && echo "Deploy master and alias" && now-travis -T devoorhoede --env DATO_API_TOKEN --env RELOAD_TOKEN && now -T devoorhoede alias --token=$NOW_TOKEN
+  - test $TRAVIS_EVENT_TYPE = "pull_request" && echo "Deploy PR to Now" && now-travis -T devoorhoede --env DATO_API_TOKEN
+  - test $TRAVIS_EVENT_TYPE = "push" && test $TRAVIS_BRANCH = "master" && echo "Deploy master and alias" && now-travis -T devoorhoede --env DATO_API_TOKEN && now -T devoorhoede alias --token=$NOW_TOKEN

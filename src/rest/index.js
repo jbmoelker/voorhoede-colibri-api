@@ -85,6 +85,24 @@ function getDocsUrl (req) {
   return `${baseUrl}/api/${restVersion}#/default/${method}${path}`
 }
 
+function getCollectionItemMeta ({ item, Model, req }) {
+  const useMeta = req.query.meta
+  if (!useMeta) {
+    return undefined
+  }
+  const { fields, language, meta } = req.query
+  const queryParams = [
+    language ? `language=${language}` : undefined,
+    Array.isArray(fields) ? `fields=${fields.join(',')}` : undefined,
+    'meta=true'
+  ].filter(Boolean)
+  const url = `${getBaseUrl(req)}/api/${restVersion}${req.route.path}/${item.slug}?${queryParams.join('&')}`
+  return {
+    type: Model.name,
+    self: item.slug ? url : undefined
+  }
+}
+
 function handleErrors () {
   return (error, req, res, next) => {
     const { data, message, statusCode } = error
@@ -102,11 +120,17 @@ function handleErrors () {
 function routeCollection (Model) {
   return async function (req, res, next) {
     const { fields, language, limit, offset } = req.query
-    const items = await Model.find({ language, limit, offset })
+    const useMeta = req.query.meta
+    const meta = useMeta ? {
+      type: `${Model.name}Collection`,
+      self: `${getBaseUrl(req)}${req.originalUrl}`
+    } : undefined
+    const items = (await Model.find({ language, limit, offset }))
+      .map(item => ({ ...item, meta: getCollectionItemMeta({ item, Model, req }) }))
     if (Array.isArray(fields)) {
-      return res.json( items.map(item => pick(item, fields)) )
+      return res.json({ meta, items: items.map(item => pick(item, ['meta', ...fields])) })
     }
-    res.json(items)
+    res.json({ meta, items })
   }
 }
 
@@ -114,14 +138,19 @@ function routeItem (Model) {
   return async function (req, res, next) {
     const { fields, language } = req.query
     const { slug } = req.params
+    const useMeta = req.query.meta
     const item = await Model.findOne({ language, slug })
     if (!item) {
       return next(new NotFoundError(`No ${Model.name} found with slug '${slug}'`))
     }
+    const meta = useMeta ? {
+      type: Model.name,
+      self: `${getBaseUrl(req)}${req.originalUrl}`
+    } : undefined
     if (Array.isArray(fields)) {
-      res.json(pick(item, fields))
+      res.json({ meta, ...pick(item, fields) })
     } else {
-      res.json(item)
+      res.json({ meta, ...item })
     }
   }
 }
@@ -141,8 +170,13 @@ function routePage (Model) {
   return async function (req, res) {
     const defaultFields = Object.keys(schema.definitions[Model.name].properties)
     const { language, fields = defaultFields } = req.query
+    const useMeta = req.query.meta
+    const meta = useMeta ? {
+      type: Model.name,
+      self: `${getBaseUrl(req)}${req.originalUrl}`
+    } : undefined
     const page = await Model.findOne({ language })
-    res.json(pick(page, fields))
+    res.json({ meta, ...pick(page, fields) })
   }
 }
 
